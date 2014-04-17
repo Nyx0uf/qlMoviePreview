@@ -1,3 +1,13 @@
+//
+//  Prefix.pch
+//  qlMoviePreview
+//
+//  Created by @Nyx0uf on 15/04/14.
+//  Copyright (c) 2014 Nyx0uf. All rights reserved.
+//  www.cocoaintheshell.com
+//
+
+
 #ifdef DEBUG
 
 #define DLog(...) NSLog(@"[%d] [%s] %@", __LINE__, __PRETTY_FUNCTION__, [NSString stringWithFormat:__VA_ARGS__])

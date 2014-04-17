@@ -1,3 +1,13 @@
+//
+//  MediainfoOutputParser.m
+//  qlMoviePreview
+//
+//  Created by @Nyx0uf on 15/04/14.
+//  Copyright (c) 2014 Nyx0uf. All rights reserved.
+//  www.cocoaintheshell.com
+//
+
+
 #import "MediainfoOutputParser.h"
 
 
