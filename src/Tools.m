@@ -20,12 +20,17 @@
 
 +(NSString*)createThumbnailForFilepath:(NSString*)filepath
 {
+	// Create a directory to hold generated thumbnails
+	NSFileManager* fileManager = [[NSFileManager alloc] init];
+	NSString* cacheDirectory = [@"/tmp/" stringByAppendingPathComponent:@"qlmoviepreview"];
+	if (![fileManager fileExistsAtPath:cacheDirectory])
+		[fileManager createDirectoryAtPath:cacheDirectory withIntermediateDirectories:YES attributes:nil error:nil];
 	// Create thumbnail path
 	NSString* md5 = [Tools __md5String:filepath];
-	NSString* thumbnailPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", md5]];
+	NSString* thumbnailPath = [cacheDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", md5]];
 
 	// Thumbnail only once
-	if ([[NSFileManager defaultManager] fileExistsAtPath:thumbnailPath])
+	if ([fileManager fileExistsAtPath:thumbnailPath])
 		return thumbnailPath;
 
 	// ffmpegthumbnailer can be installed via homebrew
