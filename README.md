@@ -27,7 +27,7 @@ For the others, open **qlMoviePreview.xcodeproj**. If you hit the run button, it
 
 ### License ###
 
-***qlMoviePreview*** is released under the *Simplified BSD license*, see **LICENSE.txt**.
+***qlMoviePreview*** is released under the *Simplified BSD license*, see **LICENSE**.
 
 Blog : [Cocoa in the Shell](http://www.cocoaintheshell.com "Cocoa in the Shell")
 
