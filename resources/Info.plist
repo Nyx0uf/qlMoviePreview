@@ -28,7 +28,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>1.0.1</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>
@@ -50,7 +50,7 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2014 Nyx0uf. All rights reserved.</string>
 	<key>QLNeedsToBeRunInMainThread</key>
-	<true/>
+	<false/>
 	<key>QLPreviewHeight</key>
 	<integer>720</integer>
 	<key>QLPreviewWidth</key>
