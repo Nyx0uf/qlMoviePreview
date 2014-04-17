@@ -218,7 +218,7 @@
 		{
 			// Language
 			NSString* lang = track[NYX_TEXT_LANGUAGE];
-			[strSubs appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@</span></li>", lang];
+			[strSubs appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@</span></li>", (lang) ? lang : @"<em>Undefined</em>"];
 			// Format
 			NSString* format = track[NYX_TEXT_FORMAT];
 			[strSubs appendFormat:@"<li><span class=\"st\">Format:</span> <span class=\"sc\">%@</span></li>", format];
