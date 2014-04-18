@@ -12,6 +12,8 @@
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>public.item</string>
+				<string>com.macblurayplayer.matroska</string>
+				<string>org.niltsh.mplayerx-matroska-video</string>
 			</array>
 		</dict>
 	</array>
