@@ -4,7 +4,7 @@ This is a *QuickLook* plugin for Mac OS X *10.9* that allows to have a thumbnail
 
 ![qlMoviePreview finder icons](http://static.whine.fr/images/2014/qlmoviepreview1.jpg)
 
-![qlMoviePreview QL preview](http://static.whine.fr/images/2014/qlmoviepreview2.jpg)
+![qlMoviePreview QL preview](http://static.whine.fr/images/2014/qlmoviepreview3.jpg)
 
 Currently it only supports **.mkv** files because I don't care about other formats, but adding support for them should be quite easy.
 
@@ -15,7 +15,7 @@ First you need to have *ffmpegthumbnailer* and *mediainfo* installed. The easies
 
 	brew install ffmpegthumbnailer media-info
 
-Then, for those who don't want to build from the sources, you can download the plugin here : [qlMoviePreview for Mavericks](http://repo.whine.fr/qlmoviepreview.qlgenerator-10.9.zip)
+Then, for those who don't want to build from the sources, you can download the plugin [here](http://repo.whine.fr/qlmoviepreview.qlgenerator-10.9.zip).
 
 Unzip it, and place it in */Library/QuickLook* or *~/Library/QuickLook*.
 
