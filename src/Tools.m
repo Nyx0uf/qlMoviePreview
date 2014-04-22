@@ -32,7 +32,7 @@
 {
 	// Create a directory to hold generated thumbnails
 	NSFileManager* fileManager = [[NSFileManager alloc] init];
-	NSString* cacheDirectory = [@"/tmp/" stringByAppendingPathComponent:@"qlmoviepreview"];
+	NSString* cacheDirectory = [@"/tmp/" stringByAppendingPathComponent:@"qlmoviepreview/"];
 	if (![fileManager fileExistsAtPath:cacheDirectory])
 		[fileManager createDirectoryAtPath:cacheDirectory withIntermediateDirectories:YES attributes:nil error:nil];
 	// Create thumbnail path
@@ -263,7 +263,7 @@
 	NSMutableString* ret = [[NSMutableString alloc] init];
 	for (NSUInteger i = 0; i < CC_MD5_DIGEST_LENGTH; i++)
 		[ret appendFormat:@"%02x", (int)(digest[i])];
-	return [[NSString alloc] initWithString:ret];
+	return [ret copy];
 }
 
 @end
