@@ -13,7 +13,7 @@
 
 @interface Tools : NSObject
 
-+(BOOL)isValidFilepath:(NSString*)filepath;
++(BOOL)isValidFilepath:(NSString*)filepath UTI:(NSString*)uti;
 
 +(NSString*)createThumbnailForFilepath:(NSString*)filepath;
 

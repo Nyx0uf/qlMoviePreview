@@ -23,7 +23,7 @@ OSStatus GenerateThumbnailForURL(void* thisInterface, QLThumbnailRequestRef thum
 		DLog(@"uti=%@\nopts=%@", contentTypeUTI, options);
 		// Verify if we support this type of file
 		NSString* filepath = [(__bridge NSURL*)url path];
-		if (![Tools isValidFilepath:filepath])
+		if (![Tools isValidFilepath:filepath UTI:(__bridge NSString*)contentTypeUTI])
 		{
 			QLThumbnailRequestSetImageAtURL(thumbnail, url, NULL);
 			return kQLReturnNoError;

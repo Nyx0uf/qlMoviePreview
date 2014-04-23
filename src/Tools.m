@@ -15,7 +15,7 @@
 
 @implementation Tools
 
-+(BOOL)isValidFilepath:(NSString*)filepath
++(BOOL)isValidFilepath:(NSString*)filepath UTI:(NSString*)uti
 {
 	// Add extensions in the array to support more file types
 	// I only have mkv so I currently don't care about other formats

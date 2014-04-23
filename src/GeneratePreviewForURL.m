@@ -22,7 +22,7 @@ OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview,
 	{
 		// Verify if we support this type of file
 		NSString* filepath = [(__bridge NSURL*)url path];
-		if (![Tools isValidFilepath:filepath])
+		if (![Tools isValidFilepath:filepath UTI:(__bridge NSString*)contentTypeUTI])
 		{
 			QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, NULL);
 			return kQLReturnNoError;
