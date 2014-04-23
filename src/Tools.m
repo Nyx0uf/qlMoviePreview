@@ -62,13 +62,12 @@
 +(NSDictionary*)mediainfoForFilepath:(NSString*)filepath
 {
 	// mediainfo can be installed via homebrew
+	// Output infos as XML
 	NSTask* task = [[NSTask alloc] init];
 	[task setLaunchPath:@"/usr/local/bin/mediainfo"];
 	[task setArguments:@[@"--Output=XML", filepath]];
-
 	NSPipe* outputPipe = [NSPipe pipe];
 	[task setStandardOutput:outputPipe];
-
 	[task launch];
 	[task waitUntilExit];
 
