@@ -35,6 +35,7 @@
 	NSString* cacheDirectory = [@"/tmp/" stringByAppendingPathComponent:@"qlmoviepreview/"];
 	if (![fileManager fileExistsAtPath:cacheDirectory])
 		[fileManager createDirectoryAtPath:cacheDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+
 	// Create thumbnail path
 	NSString* md5 = [Tools __md5String:filepath];
 	NSString* thumbnailPath = [cacheDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", md5]];
