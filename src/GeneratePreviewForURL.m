@@ -28,7 +28,7 @@ OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview,
 			return kQLReturnNoError;
 		}
 
-		// Check if cancel since thumb generation can take a long time
+		// Check if cancel since thumbnailing can take a long time
 		if (QLPreviewRequestIsCancelled(preview))
 			return kQLReturnNoError;
 
@@ -74,11 +74,9 @@ OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview,
 		NSString* video = mediainfo[@"video"];
 		NSString* audio = mediainfo[@"audio"];
 		NSString* subs = mediainfo[@"subs"];
-		NSMutableString* html = [[NSMutableString alloc] initWithFormat:@"<!DOCTYPE html><html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"cid:css\"></head>"];
-		[html appendFormat:@"<body><div id=\"c\"><div id=\"i\"><img src=\"cid:thb\"></div>"];
-		[html appendFormat:@"<div id=\"t\">%@%@%@%@</div></div></body></html>", general ? general : @"", video ? video : @"", audio	? audio : @"", subs ? subs : @""];
+		NSString* html = [[NSString alloc] initWithFormat:@"<!DOCTYPE html><html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"cid:css\"></head><body><div id=\"c\"><div id=\"i\"><img src=\"cid:thb\"></div><div id=\"t\">%@%@%@%@</div></div></body></html>", general ?: @"", video ?: @"", audio ?: @"", subs ?: @""];
 
-		// Give the HTMl to QuickLook
+		// Give the HTML to QuickLook
 		QLPreviewRequestSetDataRepresentation(preview, (__bridge CFDataRef)[html dataUsingEncoding:NSUTF8StringEncoding], kUTTypeHTML, (__bridge CFDictionaryRef)properties);
 
 		// Delete thumbnail
