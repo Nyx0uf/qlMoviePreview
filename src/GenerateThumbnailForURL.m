@@ -24,22 +24,16 @@ OSStatus GenerateThumbnailForURL(void* thisInterface, QLThumbnailRequestRef thum
 		// Verify if we support this type of file
 		NSString* filepath = [(__bridge NSURL*)url path];
 		if (![Tools isValidFilepath:filepath UTI:(__bridge NSString*)contentTypeUTI])
-		{
-			QLThumbnailRequestSetImageAtURL(thumbnail, url, NULL);
 			return kQLReturnNoError;
-		}
 
-		// Check if cancel since thumb generation can take a long time
+		// Check if cancel since thumbnailing can take a long time
 		if (QLThumbnailRequestIsCancelled(thumbnail))
 			return kQLReturnNoError;
 
 		// Create thumbnail
 		NSString* thumbnailPath = [Tools createThumbnailForFilepath:filepath];
 		if (!thumbnailPath)
-		{
-			QLThumbnailRequestSetImageAtURL(thumbnail, url, NULL);
 			return kQLReturnNoError;
-		}
 
 		// Set thumbnail icon
 		NSURL* outURL = [[NSURL alloc] initFileURLWithPath:thumbnailPath];
