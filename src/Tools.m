@@ -15,15 +15,12 @@
 
 @implementation Tools
 
-+(BOOL)isValidFilepath:(NSString*)filepath UTI:(NSString*)uti
++(BOOL)isValidFilepath:(NSString*)filepath
 {
 	// Add extensions in the array to support more file types
-	// I only have mkv so I currently don't care about other formats
 	static NSArray* __valid_exts = nil;
 	if (!__valid_exts)
-		__valid_exts = [[NSArray alloc] initWithObjects:@"mkv", nil];
-	// Check with extensions because UTI can depend on the player
-	// TODO: more robust way?
+		__valid_exts = [[NSArray alloc] initWithObjects:@"mkv", @"avi", @"divx", nil];
 	NSString* extension = [filepath pathExtension];
 	return [__valid_exts containsObject:extension];
 }
