@@ -62,7 +62,7 @@
 	// Output infos as XML
 	NSTask* task = [[NSTask alloc] init];
 	[task setLaunchPath:@"/usr/local/bin/mediainfo"];
-	[task setArguments:@[@"--Output=XML", filepath]];
+	[task setArguments:@[filepath, @"--Output=XML"]];
 	NSPipe* outputPipe = [NSPipe pipe];
 	[task setStandardOutput:outputPipe];
 	[task launch];
@@ -73,7 +73,7 @@
 		return nil;
 
 	// Parse the mediainfo XML output
-	MediainfoOutputParser* parser = [[MediainfoOutputParser alloc] initWithData:outputData];
+	MediainfoOutputParser* parser = [[MediainfoOutputParser alloc] initWithData:[[[NSString alloc] initWithData:outputData encoding:NSISOLatin1StringEncoding] dataUsingEncoding:NSUTF8StringEncoding]];
 	NSDictionary* tracks = [parser parse];
 
 	/* General file info */
