@@ -12,8 +12,7 @@
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>public.item</string>
-				<string>com.macblurayplayer.matroska</string>
-				<string>org.niltsh.mplayerx-matroska-video</string>
+				<string>public.movie</string>
 			</array>
 		</dict>
 	</array>
@@ -30,7 +29,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.2</string>
+	<string>1.0.5</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>
