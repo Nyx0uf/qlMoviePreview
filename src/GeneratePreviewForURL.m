@@ -21,8 +21,9 @@ OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview,
 	@autoreleasepool
 	{
 		// Verify if we support this type of file
+		// Only check extension because .mov/m4v are natively previewed in the QL window
 		NSString* filepath = [(__bridge NSURL*)url path];
-		if (![Tools isValidFilepath:filepath UTI:(__bridge NSString*)contentTypeUTI])
+		if (![Tools isValidFilepath:filepath])
 		{
 			QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, NULL);
 			return kQLReturnNoError;
