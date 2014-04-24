@@ -140,6 +140,7 @@
 		else
 			_trackType = NYXTrackTypeNO;
 		_dictTrack = [[NSMutableDictionary alloc] init];
+		//DLog(@"TRACK BEG (%ld)", _trackType);
 	}
 
 	// We are only interested in a few tags for each type of track
@@ -298,6 +299,7 @@
 {
 	if ([elementName isEqualToString:@"track"])
 	{
+		//DLog(@"TRACK END (%ld)", _trackType);
 		NSNumber* key = @(_trackType);
 
 		if (NYXTrackTypeGeneral == _trackType)
@@ -685,6 +687,11 @@
 		default:
 			break;
 	}
+}
+
+-(void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError
+{
+	DLog(@"%@ %@", [parseError localizedDescription], [parseError userInfo]);
 }
 		  
 @end
