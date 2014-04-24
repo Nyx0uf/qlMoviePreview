@@ -21,10 +21,14 @@ OSStatus GenerateThumbnailForURL(void* thisInterface, QLThumbnailRequestRef thum
 	@autoreleasepool
 	{
 		DLog(@"uti=%@\nopts=%@", contentTypeUTI, options);
-		// Verify if we support this type of file
+		// Check if the UTI is movie
 		NSString* filepath = [(__bridge NSURL*)url path];
-		if (![Tools isValidFilepath:filepath UTI:(__bridge NSString*)contentTypeUTI])
-			return kQLReturnNoError;
+		if (!UTTypeConformsTo(contentTypeUTI, kUTTypeMovie))
+		{
+			// NO. Check the extension
+			if (![Tools isValidFilepath:filepath])
+				return kQLReturnNoError;
+		}
 
 		// Check if cancel since thumbnailing can take a long time
 		if (QLThumbnailRequestIsCancelled(thumbnail))
