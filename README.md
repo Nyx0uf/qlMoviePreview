@@ -6,8 +6,6 @@ This is a **QuickLook** plugin for Mac OS X *10.9* that allows to have a thumbna
 
 ![qlMoviePreview QL preview](http://static.whine.fr/images/2014/qlmoviepreview3.jpg)
 
-Currently it only supports **.mkv** files because I don't care about other formats, but adding support for them should be quite easy.
-
 
 ### Installation ###
 
