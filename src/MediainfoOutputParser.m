@@ -61,6 +61,10 @@
 	NSMutableString* _vreframes;
 	/// parsed video title
 	NSMutableString* _vtitle;
+	/// parsed video default flag
+	NSMutableString* _vtdefault;
+	/// parsed video forced flag
+	NSMutableString* _vtforced;
 	/// parsed video width
 	NSMutableString* _vwidth;
 
@@ -83,14 +87,22 @@
 	NSMutableString* _asampling;
 	/// parsed audio title
 	NSMutableString* _atitle;
+	/// parsed video default flag
+	NSMutableString* _atdefault;
+	/// parsed video forced flag
+	NSMutableString* _atforced;
 
 	/* text */
 	/// parsed text format
-	NSMutableString* _tformat;
+	NSMutableString* _sformat;
 	/// parsed text language
-	NSMutableString* _tlang;
+	NSMutableString* _slang;
 	/// parsed text title
-	NSMutableString* _ttitle;
+	NSMutableString* _stitle;
+	/// parsed video default flag
+	NSMutableString* _stdefault;
+	/// parsed video forced flag
+	NSMutableString* _stforced;
 }
 
 #pragma mark - Allocations
@@ -224,6 +236,14 @@
 			{
 				_vtitle = [[NSMutableString alloc] init];
 			}
+			else if ([elementName isEqualToString:@"Default"])
+			{
+				_vtdefault = [[NSMutableString alloc] init];
+			}
+			else if ([elementName isEqualToString:@"Forced"])
+			{
+				_vtforced = [[NSMutableString alloc] init];
+			}
 			else if ([elementName isEqualToString:@"Width"])
 			{
 				_vwidth = [[NSMutableString alloc] init];
@@ -268,21 +288,37 @@
 			{
 				_atitle = [[NSMutableString alloc] init];
 			}
+			else if ([elementName isEqualToString:@"Default"])
+			{
+				_atdefault = [[NSMutableString alloc] init];
+			}
+			else if ([elementName isEqualToString:@"Forced"])
+			{
+				_atforced = [[NSMutableString alloc] init];
+			}
 			break;
 		}
 		case NYXTrackTypeText:
 		{
 			if ([elementName isEqualToString:@"Format"])
 			{
-				_tformat = [[NSMutableString alloc] init];
+				_sformat = [[NSMutableString alloc] init];
 			}
 			else if ([elementName isEqualToString:@"Language"])
 			{
-				_tlang = [[NSMutableString alloc] init];
+				_slang = [[NSMutableString alloc] init];
 			}
 			else if ([elementName isEqualToString:@"Title"])
 			{
-				_ttitle = [[NSMutableString alloc] init];
+				_stitle = [[NSMutableString alloc] init];
+			}
+			else if ([elementName isEqualToString:@"Default"])
+			{
+				_stdefault = [[NSMutableString alloc] init];
+			}
+			else if ([elementName isEqualToString:@"Forced"])
+			{
+				_stforced = [[NSMutableString alloc] init];
 			}
 			break;
 		}
@@ -424,6 +460,16 @@
 				_dictTrack[NYX_VIDEO_TITLE] = _vtitle;
 				_vtitle = nil;
 			}
+			else if ([elementName isEqualToString:@"Default"])
+			{
+				_dictTrack[NYX_VIDEO_TRACK_DEFAULT] = ([_vtdefault isEqualToString:@"No"]) ? @NO : @YES;
+				_vtdefault = nil;
+			}
+			else if ([elementName isEqualToString:@"Forced"])
+			{
+				_dictTrack[NYX_VIDEO_TRACK_FORCED] = ([_vtforced isEqualToString:@"No"]) ? @NO : @YES;
+				_vtforced = nil;
+			}
 			else if ([elementName isEqualToString:@"Width"])
 			{
 				_dictTrack[NYX_VIDEO_WIDTH] = [[_vwidth stringByReplacingOccurrencesOfString:@" " withString:@""] stringByTrimmingCharactersInSet:_charSetToRemove];
@@ -478,24 +524,44 @@
 				_dictTrack[NYX_AUDIO_TITLE] = _atitle;
 				_atitle = nil;
 			}
+			else if ([elementName isEqualToString:@"Default"])
+			{
+				_dictTrack[NYX_AUDIO_TRACK_DEFAULT] = ([_atdefault isEqualToString:@"No"]) ? @NO : @YES;
+				_atdefault = nil;
+			}
+			else if ([elementName isEqualToString:@"Forced"])
+			{
+				_dictTrack[NYX_AUDIO_TRACK_FORCED] = ([_atforced isEqualToString:@"No"]) ? @NO : @YES;
+				_atforced = nil;
+			}
 			break;
 		}
 		case NYXTrackTypeText:
 		{
 			if ([elementName isEqualToString:@"Format"])
 			{
-				_dictTrack[NYX_TEXT_FORMAT] = _tformat;
-				_tformat = nil;
+				_dictTrack[NYX_SUB_FORMAT] = _sformat;
+				_sformat = nil;
 			}
 			else if ([elementName isEqualToString:@"Language"])
 			{
-				_dictTrack[NYX_TEXT_LANGUAGE] = _tlang;
-				_tlang = nil;
+				_dictTrack[NYX_SUB_LANGUAGE] = _slang;
+				_slang = nil;
 			}
 			else if ([elementName isEqualToString:@"Title"])
 			{
-				_dictTrack[NYX_TEXT_TITLE] = _ttitle;
-				_ttitle = nil;
+				_dictTrack[NYX_SUB_TITLE] = _stitle;
+				_stitle = nil;
+			}
+			else if ([elementName isEqualToString:@"Default"])
+			{
+				_dictTrack[NYX_SUB_TRACK_DEFAULT] = ([_stdefault isEqualToString:@"No"]) ? @NO : @YES;
+				_stdefault = nil;
+			}
+			else if ([elementName isEqualToString:@"Forced"])
+			{
+				_dictTrack[NYX_SUB_TRACK_FORCED] = ([_stforced isEqualToString:@"No"]) ? @NO : @YES;
+				_stforced = nil;
 			}
 			break;
 		}
@@ -605,6 +671,16 @@
 				[_vtitle appendString:string];
 				return;
 			}
+			if (_vtdefault)
+			{
+				[_vtdefault appendString:string];
+				return;
+			}
+			if (_vtforced)
+			{
+				[_vtforced appendString:string];
+				return;
+			}
 			if (_vwidth)
 			{
 				[_vwidth appendString:string];
@@ -659,23 +735,43 @@
 				[_atitle appendString:string];
 				return;
 			}
+			if (_atdefault)
+			{
+				[_atdefault appendString:string];
+				return;
+			}
+			if (_atforced)
+			{
+				[_atforced appendString:string];
+				return;
+			}
 			break;
 		}
 		case NYXTrackTypeText:
 		{
-			if (_tformat)
+			if (_sformat)
 			{
-				[_tformat appendString:string];
+				[_sformat appendString:string];
 				return;
 			}
-			if (_tlang)
+			if (_slang)
 			{
-				[_tlang appendString:string];
+				[_slang appendString:string];
 				return;
 			}
-			if (_ttitle)
+			if (_stitle)
 			{
-				[_ttitle appendString:string];
+				[_stitle appendString:string];
+				return;
+			}
+			if (_stdefault)
+			{
+				[_stdefault appendString:string];
+				return;
+			}
+			if (_stforced)
+			{
+				[_stforced appendString:string];
 				return;
 			}
 			break;

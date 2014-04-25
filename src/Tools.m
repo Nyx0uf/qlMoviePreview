@@ -229,13 +229,13 @@
 		for (NSDictionary* track in subsArray)
 		{
 			// Language
-			NSString* lang = track[NYX_TEXT_LANGUAGE];
+			NSString* lang = track[NYX_SUB_LANGUAGE];
 			[strSubs appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@</span></li>", (lang) ? lang : @"<em>Undefined</em>"];
 			// Format
-			NSString* format = track[NYX_TEXT_FORMAT];
+			NSString* format = track[NYX_SUB_FORMAT];
 			[strSubs appendFormat:@"<li><span class=\"st\">Format:</span> <span class=\"sc\">%@</span></li>", format];
 			// Title
-			NSString* title = track[NYX_TEXT_TITLE];
+			NSString* title = track[NYX_SUB_TITLE];
 			if (title)
 				[strSubs appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%@</span></li>", title];
 			// Separator if multiple streams

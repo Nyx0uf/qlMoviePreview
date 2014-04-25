@@ -30,6 +30,8 @@
 #define NYX_VIDEO_PROFILE @"video_profile"
 #define NYX_VIDEO_REFRAMES @"video_reframes"
 #define NYX_VIDEO_TITLE @"video_title"
+#define NYX_VIDEO_TRACK_DEFAULT @"video_track_default"
+#define NYX_VIDEO_TRACK_FORCED @"video_track_forced"
 #define NYX_VIDEO_WIDTH @"video_width"
 // Audio tags
 #define NYX_AUDIO_BITDEPTH @"audio_bitdepth"
@@ -41,10 +43,14 @@
 #define NYX_AUDIO_PROFILE @"audio_profile"
 #define NYX_AUDIO_SAMPLING @"audio_sampling"
 #define NYX_AUDIO_TITLE @"audio_title"
-// Text tags
-#define NYX_TEXT_FORMAT @"text_format"
-#define NYX_TEXT_LANGUAGE @"text_lang"
-#define NYX_TEXT_TITLE @"text_title"
+#define NYX_AUDIO_TRACK_DEFAULT @"audio_track_default"
+#define NYX_AUDIO_TRACK_FORCED @"audio_track_forced"
+// Subs tags
+#define NYX_SUB_FORMAT @"sub_format"
+#define NYX_SUB_LANGUAGE @"sub_lang"
+#define NYX_SUB_TITLE @"sub_title"
+#define NYX_SUB_TRACK_DEFAULT @"sub_track_default"
+#define NYX_SUB_TRACK_FORCED @"sub_track_forced"
 
 
 // Tracks type
