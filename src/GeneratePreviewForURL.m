@@ -29,7 +29,7 @@ OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview,
 			return kQLReturnNoError;
 		}
 
-		// Check if cancel since thumbnailing can take a long time
+		// Check if cancelled since thumbnailing can take a long time
 		if (QLPreviewRequestIsCancelled(preview))
 			return kQLReturnNoError;
 
@@ -40,6 +40,10 @@ OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview,
 			QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, NULL);
 			return kQLReturnNoError;
 		}
+
+		// Check if cancelled
+		if (QLPreviewRequestIsCancelled(preview))
+			return kQLReturnNoError;
 
 		// Get the movie properties
 		NSDictionary* mediainfo = [Tools mediainfoForFilepath:filepath];
