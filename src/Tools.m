@@ -161,7 +161,8 @@
 		{
 			// Language
 			NSString* lang = track[NYX_AUDIO_LANGUAGE];
-			[strAudio appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@</span></li>", (lang) ? lang : @"<em>Undefined</em>"];
+			const BOOL def = [track[NYX_AUDIO_TRACK_DEFAULT] boolValue];
+			[strAudio appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@ %@</span></li>", (lang) ? lang : @"<em>Undefined</em>", (def) ? @"<em>(Default)</em>" : @""];
 			// Format, profile, bit depth, bitrate, sampling rate
 			NSString* format = track[NYX_AUDIO_FORMAT];
 			NSString* profile = track[NYX_AUDIO_PROFILE];
@@ -230,7 +231,8 @@
 		{
 			// Language
 			NSString* lang = track[NYX_SUB_LANGUAGE];
-			[strSubs appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@</span></li>", (lang) ? lang : @"<em>Undefined</em>"];
+			const BOOL def = [track[NYX_SUB_TRACK_DEFAULT] boolValue];
+			[strSubs appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@ %@</span></li>", (lang) ? lang : @"<em>Undefined</em>", (def) ? @"<em>(Default)</em>" : @""];
 			// Format
 			NSString* format = track[NYX_SUB_FORMAT];
 			[strSubs appendFormat:@"<li><span class=\"st\">Format:</span> <span class=\"sc\">%@</span></li>", format];
