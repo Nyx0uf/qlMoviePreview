@@ -30,7 +30,7 @@ OSStatus GenerateThumbnailForURL(void* thisInterface, QLThumbnailRequestRef thum
 				return kQLReturnNoError;
 		}
 
-		// Check if cancel since thumbnailing can take a long time
+		// Check if cancelled since thumbnailing can take a long time
 		if (QLThumbnailRequestIsCancelled(thumbnail))
 			return kQLReturnNoError;
 
