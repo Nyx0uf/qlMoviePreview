@@ -20,7 +20,7 @@
 	// Add extensions in the array to support more file types
 	static NSArray* __valid_exts = nil;
 	if (!__valid_exts)
-		__valid_exts = [[NSArray alloc] initWithObjects:@"mkv", @"avi", @"divx", @"y4m", nil];
+		__valid_exts = [[NSArray alloc] initWithObjects:@"mkv", @"avi", @"divx", @"y4m", @"mp4", nil];
 	NSString* extension = [filepath pathExtension];
 	return [__valid_exts containsObject:extension];
 }
