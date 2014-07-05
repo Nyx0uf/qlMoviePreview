@@ -20,7 +20,6 @@ OSStatus GenerateThumbnailForURL(void* thisInterface, QLThumbnailRequestRef thum
 {
 	@autoreleasepool
 	{
-		DLog(@"uti=%@\nopts=%@", contentTypeUTI, options);
 		// Check if the UTI is movie
 		NSString* filepath = [(__bridge NSURL*)url path];
 		if (!UTTypeConformsTo(contentTypeUTI, kUTTypeMovie))
@@ -48,9 +47,6 @@ OSStatus GenerateThumbnailForURL(void* thisInterface, QLThumbnailRequestRef thum
 		//QLThumbnailRequestSetThumbnailWithURLRepresentation(thumbnail, (__bridge CFURLRef)outURL, kUTTypePNG, NULL, NULL);
 		//NSData* data = [NSData dataWithContentsOfURL:outURL];
 		//QLThumbnailRequestSetThumbnailWithDataRepresentation(thumbnail, (__bridge CFDataRef)data, kUTTypePNG, NULL, NULL);
-
-		// Delete thumbnail
-		//[[NSFileManager defaultManager] removeItemAtPath:thumbnailPath error:nil];
 
 		return kQLReturnNoError;
 	}
