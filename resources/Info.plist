@@ -11,8 +11,19 @@
 			<string>QLGenerator</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>public.item</string>
+				<string>com.apple.quicktime-movie</string>
+				<string>public.avi</string>
+				<string>public.mpeg</string>
+				<string>public.mpeg-4</string>
+				<string>public.3gpp</string>
+				<string>public.3gpp2</string>
+				<string>com.real.realmedia</string>
+				<string>com.microsoft.windows-​media-wm</string>
+				<string>com.microsoft.windows-​media-wmv</string>
+				<string>com.microsoft.windows-​media-wmp</string>
+				<string>public.video</string>
 				<string>public.movie</string>
+				<string>public.item</string>
 			</array>
 		</dict>
 	</array>
@@ -29,7 +40,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.5</string>
+	<string>1.0.6</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>
