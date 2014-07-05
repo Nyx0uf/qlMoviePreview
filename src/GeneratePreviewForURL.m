@@ -20,13 +20,24 @@ OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview,
 {
 	@autoreleasepool
 	{
+		NSString* filepath = [(__bridge NSURL*)url path];
+
 		// Verify if we support this type of file
 		// Only check extension because .mov/m4v are natively previewed in the QL window
-		NSString* filepath = [(__bridge NSURL*)url path];
-		if (![Tools isValidFilepath:filepath])
+		/*if (![Tools isValidFilepath:filepath])
 		{
 			QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, NULL);
 			return kQLReturnNoError;
+		}*/
+		// Check if the UTI is movie
+		if (!UTTypeConformsTo(contentTypeUTI, kUTTypeMovie))
+		{
+			// NO. Check the extension
+			if (![Tools isValidFilepath:filepath])
+			{
+				QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, NULL);
+				return kQLReturnNoError;
+			}
 		}
 
 		// Check if cancelled since thumbnailing can take a long time
@@ -83,9 +94,6 @@ OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview,
 
 		// Give the HTML to QuickLook
 		QLPreviewRequestSetDataRepresentation(preview, (__bridge CFDataRef)[html dataUsingEncoding:NSUTF8StringEncoding], kUTTypeHTML, (__bridge CFDictionaryRef)properties);
-
-		// Delete thumbnail
-		//[[NSFileManager defaultManager] removeItemAtPath:thumbnailPath error:nil];
 		
 		return kQLReturnNoError;
 	}
