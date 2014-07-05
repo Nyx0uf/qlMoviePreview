@@ -20,7 +20,7 @@
 	// Add extensions in the array to support more file types
 	static NSArray* __valid_exts = nil;
 	if (!__valid_exts)
-		__valid_exts = [[NSArray alloc] initWithObjects:@"mkv", @"avi", @"divx", @"y4m", nil];
+		__valid_exts = [[NSArray alloc] initWithObjects:@"avi", @"divx", @"dv", @"flv", @"hevc", @"mkv", @"mov", @"mp4", @"mts", @"m2ts", @"m4v", @"ogv", @"rmvb", @"ts", @"vob", @"wmv", @"yuv", @"y4m", @"264", @"3gp", @"3gpp", @"3g2", @"3gp2", nil];
 	NSString* extension = [filepath pathExtension];
 	return [__valid_exts containsObject:extension];
 }
@@ -44,6 +44,7 @@
 	// ffmpegthumbnailer can be installed via homebrew
 	// make a thumbnail at 12% of the movie
 	// image format will be inferred from the path (png)
+	// ffmpeg -y -ss 8 -i bla.mp4 -vframes 1 -f image2 _thb.jpg
 	NSTask* task = [[NSTask alloc] init];
 	[task setLaunchPath:@"/usr/local/bin/ffmpegthumbnailer"];
 	[task setArguments:@[@"-i", filepath, @"-o", thumbnailPath, @"-s", @"0", @"-t", @"12%"]];
@@ -53,8 +54,46 @@
 	if (0 == [task terminationStatus])
 		return thumbnailPath;
 
+	DLog(@"THUMBNAILING %@ FAILED", filepath);
+
 	return nil;
 }
+#if 0
++(NSInteger)getAccurateMovieDurationInSecondsForFilepath:(NSString*)filepath
+{
+	//mediainfo --Inform="Video;%Duration%" Spirited\ Away.mkv
+	NSTask* task = [[NSTask alloc] init];
+	[task setLaunchPath:@"/usr/local/bin/mediainfo"];
+	[task setArguments:@[@"--Inform='Video;%Duration%'", filepath]];
+	NSPipe* outputPipe = [NSPipe pipe];
+	[task setStandardOutput:outputPipe];
+	[task launch];
+	[task waitUntilExit];
+
+	NSData* outputData = [[outputPipe fileHandleForReading] readDataToEndOfFile];
+	if (!outputData)
+		return 0;
+
+	NSString* dumbTimeFormatAsString = [[NSString alloc] initWithData:outputData encoding:NSASCIIStringEncoding];
+	DLog(@"dumbTimeFormatAsString = %@", dumbTimeFormatAsString);
+	const NSUInteger strSize = [dumbTimeFormatAsString length];
+
+	// only ms if I understood correctly
+	if (strSize < 4)
+		return 0;
+
+	NSString* b = [dumbTimeFormatAsString substringToIndex:strSize - 4];
+	DLog(@"b = %@", b);
+
+	// Will not be accurate
+	//const float seconds = (float)strSize / 60.0f;
+
+	//const NSInteger seconds = (NSInteger)floorf((float)strSize / 60.0f);
+	//return seconds;
+
+	return 0;
+}
+#endif
 
 +(NSDictionary*)mediainfoForFilepath:(NSString*)filepath
 {
