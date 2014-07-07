@@ -17,6 +17,8 @@
 
 +(NSString*)createThumbnailForFilepath:(NSString*)filepath;
 
++(NSInteger)getAccurateMovieDurationInSecondsForFilepath:(NSString*)filepath;
+
 +(NSDictionary*)mediainfoForFilepath:(NSString*)filepath;
 
 @end

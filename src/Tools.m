@@ -13,6 +13,9 @@
 #import <CommonCrypto/CommonDigest.h>
 
 
+#define NYX_USE_FFMPEGTHUMBNAILER 0
+
+
 @implementation Tools
 
 +(BOOL)isValidFilepath:(NSString*)filepath
@@ -41,30 +44,45 @@
 	if ([fileManager fileExistsAtPath:thumbnailPath])
 		return thumbnailPath;
 
+#if (NYX_USE_FFMPEGTHUMBNAILER == 1)
 	// ffmpegthumbnailer can be installed via homebrew
 	// make a thumbnail at 12% of the movie
 	// image format will be inferred from the path (png)
-	// ffmpeg -y -ss 8 -i bla.mp4 -vframes 1 -f image2 _thb.jpg
 	NSTask* task = [[NSTask alloc] init];
 	[task setLaunchPath:@"/usr/local/bin/ffmpegthumbnailer"];
 	[task setArguments:@[@"-i", filepath, @"-o", thumbnailPath, @"-s", @"0", @"-t", @"12%"]];
 	[task launch];
 	[task waitUntilExit];
+#else
+	// ffmpeg -y -ss 8 -i bla.mp4 -vframes 1 -f image2 thumbnail.jpg
+	// Get movie duration
+	const NSInteger duration = [self getAccurateMovieDurationInSecondsForFilepath:filepath];
+	NSTask* task = [[NSTask alloc] init];
+	[task setLaunchPath:@"/usr/local/bin/ffmpeg"];
+	if (duration <= 0) // Invalid duration, attempt to thumbnail the first frame
+		[task setArguments:@[@"-y", @"-loglevel", @"quiet", @"-i", filepath, @"-vframes", @"1", @"-f", @"image2", thumbnailPath]];
+	else // Thumbnail at 12%
+		[task setArguments:@[@"-y", @"-loglevel", @"quiet", @"-ss", [NSString stringWithFormat:@"%ld", (NSInteger)(((float)duration * 12.0f) / 100.0f)], @"-i", filepath, @"-vframes", @"1", @"-f", @"image2", thumbnailPath]];
+	[task launch];
+	[task waitUntilExit];
+#endif
 
+	// Success
 	if (0 == [task terminationStatus])
 		return thumbnailPath;
 
-	DLog(@"THUMBNAILING %@ FAILED", filepath);
+	// Failure, create an empty file to avoid cycling
+	[fileManager createFileAtPath:thumbnailPath contents:nil attributes:nil];
 
 	return nil;
 }
-#if 0
+
 +(NSInteger)getAccurateMovieDurationInSecondsForFilepath:(NSString*)filepath
 {
-	//mediainfo --Inform="Video;%Duration%" Spirited\ Away.mkv
+	// ffprobe is part of ffmpeg
 	NSTask* task = [[NSTask alloc] init];
-	[task setLaunchPath:@"/usr/local/bin/mediainfo"];
-	[task setArguments:@[@"--Inform='Video;%Duration%'", filepath]];
+	[task setLaunchPath:@"/usr/local/bin/ffprobe"];
+	[task setArguments:@[filepath, @"-show_format", @"-loglevel", @"quiet"]];
 	NSPipe* outputPipe = [NSPipe pipe];
 	[task setStandardOutput:outputPipe];
 	[task launch];
@@ -74,26 +92,22 @@
 	if (!outputData)
 		return 0;
 
-	NSString* dumbTimeFormatAsString = [[NSString alloc] initWithData:outputData encoding:NSASCIIStringEncoding];
-	DLog(@"dumbTimeFormatAsString = %@", dumbTimeFormatAsString);
-	const NSUInteger strSize = [dumbTimeFormatAsString length];
-
-	// only ms if I understood correctly
-	if (strSize < 4)
-		return 0;
-
-	NSString* b = [dumbTimeFormatAsString substringToIndex:strSize - 4];
-	DLog(@"b = %@", b);
-
-	// Will not be accurate
-	//const float seconds = (float)strSize / 60.0f;
-
-	//const NSInteger seconds = (NSInteger)floorf((float)strSize / 60.0f);
-	//return seconds;
+	// Search for duration
+	NSString* string = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding];
+	const NSRange r = [string rangeOfString:@"duration="];
+	if (r.location != NSNotFound)
+	{
+		NSString* durationString = [string substringFromIndex:r.location + 9];
+		const char* cs = [durationString cStringUsingEncoding:NSASCIIStringEncoding];
+		NSMutableString* seconds = [[NSMutableString alloc] init];
+		char* ptr = (char*)cs;
+		while (*ptr != 10)
+			[seconds appendFormat:@"%c", *ptr++];
+		return (NSInteger)floor([seconds doubleValue]);
+	}
 
 	return 0;
 }
-#endif
 
 +(NSDictionary*)mediainfoForFilepath:(NSString*)filepath
 {
