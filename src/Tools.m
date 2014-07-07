@@ -111,15 +111,28 @@
 
 +(NSDictionary*)mediainfoForFilepath:(NSString*)filepath
 {
+#define NYX_MEDIAINFO_SYMLINK_PATH @"/tmp/qlmoviepreview-tmp-symlink-for-mediainfo-to-be-happy-lulz"
+	// mediainfo can't handle paths with some characters, like '?!'...
+	// So we create a symlink to make it happy... this is so moronic.
+	NSString* okFilepath = filepath;
+	if ([filepath rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"?!"]].location != NSNotFound)
+	{
+		if ([[NSFileManager defaultManager] createSymbolicLinkAtPath:NYX_MEDIAINFO_SYMLINK_PATH withDestinationPath:filepath error:nil])
+			okFilepath = NYX_MEDIAINFO_SYMLINK_PATH;
+	}
+
 	// mediainfo can be installed via homebrew
 	// Output infos as XML
 	NSTask* task = [[NSTask alloc] init];
 	[task setLaunchPath:@"/usr/local/bin/mediainfo"];
-	[task setArguments:@[filepath, @"--Output=XML"]];
+	[task setArguments:@[okFilepath, @"--Output=XML"]];
 	NSPipe* outputPipe = [NSPipe pipe];
 	[task setStandardOutput:outputPipe];
 	[task launch];
 	[task waitUntilExit];
+	// Remove the symlink, me -> zetsuboushita.
+	if ([okFilepath isEqualToString:NYX_MEDIAINFO_SYMLINK_PATH])
+		[[NSFileManager defaultManager] removeItemAtPath:NYX_MEDIAINFO_SYMLINK_PATH error:nil];
 
 	NSData* outputData = [[outputPipe fileHandleForReading] readDataToEndOfFile];
 	if (!outputData)
