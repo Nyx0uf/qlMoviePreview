@@ -25,11 +25,11 @@ If you don't have [homebrew](http://brew.sh "homebrew website") already installe
 	brew update
 
 
-#### 3. ffmpegthumbnailer & mediainfo
+#### 3. ffmpeg & mediainfo
 
-Then you need [ffmpegthumbnailer](https://code.google.com/p/ffmpegthumbnailer/ "ffmpegthumbnailer website") and [mediainfo](http://mediaarea.net/en/MediaInfo "mediainfo website").
+Then you need [ffmpeg](https://www.ffmpeg.org/ "ffmpeg website") and [mediainfo](http://mediaarea.net/en/MediaInfo "mediainfo website").
 
-	brew install ffmpegthumbnailer media-info
+	brew install ffmpeg media-info
 
 
 #### 4. Install the plugin
