@@ -38,11 +38,12 @@ body
 #t
 {
 	width:1280px;
-	min-height:720px;
+	height:720px;
 	position:absolute;
 	top:0;
 	left:0;
 	background-color:rgba(0,0,0,.75);
+	overflow-y:scroll;
 }
 
 #t .stitle
