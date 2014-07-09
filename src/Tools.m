@@ -62,7 +62,7 @@
 	if (duration <= 0) // Invalid duration, attempt to thumbnail the first frame
 		[task setArguments:@[@"-y", @"-loglevel", @"quiet", @"-i", filepath, @"-vframes", @"1", @"-f", @"image2", thumbnailPath]];
 	else // Thumbnail at 12%
-		[task setArguments:@[@"-y", @"-loglevel", @"quiet", @"-ss", [NSString stringWithFormat:@"%ld", (NSInteger)(((float)duration * 12.0f) / 100.0f)], @"-i", filepath, @"-vframes", @"1", @"-f", @"image2", thumbnailPath]];
+		[task setArguments:@[@"-y", @"-loglevel", @"quiet", @"-ss", [NSString stringWithFormat:@"%ld", (NSInteger)((float)duration * 0.12f)], @"-i", filepath, @"-vframes", @"1", @"-f", @"image2", thumbnailPath]];
 	[task launch];
 	[task waitUntilExit];
 #endif
