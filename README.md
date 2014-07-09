@@ -29,7 +29,7 @@ If you don't have [homebrew](http://brew.sh "homebrew website") already installe
 
 Then you need [ffmpeg](https://www.ffmpeg.org/ "ffmpeg website") and [mediainfo](http://mediaarea.net/en/MediaInfo "mediainfo website").
 
-	brew install ffmpeg media-info
+	brew install ffmpeg --with-tools media-info
 
 
 #### 4. Install the plugin
