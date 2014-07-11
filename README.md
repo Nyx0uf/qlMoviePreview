@@ -31,6 +31,8 @@ Then you need [ffmpeg](https://www.ffmpeg.org/ "ffmpeg website") and [mediainfo]
 
 	brew install ffmpeg --with-tools media-info
 
+These binaries need to be in */usr/local/bin*, so for example if you manually installed ffmpeg binary in another place, you will need to make a symlink.
+
 
 #### 4. Install the plugin
 
