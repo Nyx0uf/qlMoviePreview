@@ -22,13 +22,6 @@ OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview,
 	{
 		NSString* filepath = [(__bridge NSURL*)url path];
 
-		// Verify if we support this type of file
-		// Only check extension because .mov/m4v are natively previewed in the QL window
-		/*if (![Tools isValidFilepath:filepath])
-		{
-			QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, NULL);
-			return kQLReturnNoError;
-		}*/
 		// Check if the UTI is movie
 		if (!UTTypeConformsTo(contentTypeUTI, kUTTypeMovie))
 		{

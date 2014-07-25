@@ -13,9 +13,6 @@
 #import <CommonCrypto/CommonDigest.h>
 
 
-#define NYX_USE_FFMPEGTHUMBNAILER 0
-
-
 @implementation Tools
 
 +(BOOL)isValidFilepath:(NSString*)filepath
@@ -44,16 +41,6 @@
 	if ([fileManager fileExistsAtPath:thumbnailPath])
 		return thumbnailPath;
 
-#if (NYX_USE_FFMPEGTHUMBNAILER == 1)
-	// ffmpegthumbnailer can be installed via homebrew
-	// make a thumbnail at 12% of the movie
-	// image format will be inferred from the path (png)
-	NSTask* task = [[NSTask alloc] init];
-	[task setLaunchPath:@"/usr/local/bin/ffmpegthumbnailer"];
-	[task setArguments:@[@"-i", filepath, @"-o", thumbnailPath, @"-s", @"0", @"-t", @"12%"]];
-	[task launch];
-	[task waitUntilExit];
-#else
 	// ffmpeg -y -ss 8 -i bla.mp4 -vframes 1 -f image2 thumbnail.jpg
 	// Get movie duration
 	const NSInteger duration = [self getAccurateMovieDurationInSecondsForFilepath:filepath];
@@ -65,7 +52,6 @@
 		[task setArguments:@[@"-y", @"-loglevel", @"quiet", @"-ss", [NSString stringWithFormat:@"%ld", (NSInteger)((float)duration * 0.12f)], @"-i", filepath, @"-vframes", @"1", @"-f", @"image2", thumbnailPath]];
 	[task launch];
 	[task waitUntilExit];
-#endif
 
 	// Success
 	if (0 == [task terminationStatus])
