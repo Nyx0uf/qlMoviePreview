@@ -13,6 +13,9 @@
 #import <CommonCrypto/CommonDigest.h>
 
 
+#define NYX_CACHE_DIRECTORY @"/tmp/qlmoviepreview/"
+
+
 @implementation Tools
 
 +(BOOL)isValidFilepath:(NSString*)filepath
@@ -29,19 +32,18 @@
 {
 	// Create a directory to hold generated thumbnails
 	NSFileManager* fileManager = [[NSFileManager alloc] init];
-	NSString* cacheDirectory = [@"/tmp/" stringByAppendingPathComponent:@"qlmoviepreview/"];
-	if (![fileManager fileExistsAtPath:cacheDirectory])
-		[fileManager createDirectoryAtPath:cacheDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+	if (![fileManager fileExistsAtPath:NYX_CACHE_DIRECTORY])
+		[fileManager createDirectoryAtPath:NYX_CACHE_DIRECTORY withIntermediateDirectories:YES attributes:nil error:nil];
 
-	// Create thumbnail path
+	// Create thumbnail path, need to append png for ffmpeg to guess the type
 	NSString* md5 = [Tools __md5String:filepath];
-	NSString* thumbnailPath = [cacheDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", md5]];
+	NSString* thumbnailPath = [NYX_CACHE_DIRECTORY stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", md5]];
 
 	// Thumbnail only once
 	if ([fileManager fileExistsAtPath:thumbnailPath])
 		return thumbnailPath;
 
-	// ffmpeg -y -ss 8 -i bla.mp4 -vframes 1 -f image2 thumbnail.jpg
+	// ffmpeg -y -loglevel quiet -ss 8 -i bla.mp4 -vframes 1 -f image2 thumbnail.png
 	// Get movie duration
 	const NSInteger duration = [self getAccurateMovieDurationInSecondsForFilepath:filepath];
 	NSTask* task = [[NSTask alloc] init];
@@ -97,7 +99,7 @@
 
 +(NSDictionary*)mediainfoForFilepath:(NSString*)filepath
 {
-#define NYX_MEDIAINFO_SYMLINK_PATH @"/tmp/qlmoviepreview-tmp-symlink-for-mediainfo-to-be-happy-lulz"
+#define NYX_MEDIAINFO_SYMLINK_PATH @"/tmp/qlmoviepreview/tmp-symlink-for-mediainfo-to-be-happy-lulz"
 	// mediainfo can't handle paths with some characters, like '?!'...
 	// So we create a symlink to make it happy... this is so moronic.
 	NSString* okFilepath = filepath;
