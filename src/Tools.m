@@ -101,7 +101,7 @@
 	// mediainfo can't handle paths with some characters, like '?!'...
 	// So we create a symlink to make it happy... this is so moronic.
 	NSString* okFilepath = filepath;
-	if ([filepath rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"?!"]].location != NSNotFound)
+	if ([filepath rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"?!*"]].location != NSNotFound)
 	{
 		if ([[NSFileManager defaultManager] createSymbolicLinkAtPath:NYX_MEDIAINFO_SYMLINK_PATH withDestinationPath:filepath error:nil])
 			okFilepath = NYX_MEDIAINFO_SYMLINK_PATH;
