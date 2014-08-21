@@ -87,6 +87,8 @@
 	{
 		NSString* durationString = [string substringFromIndex:r.location + 9];
 		const char* cs = [durationString cStringUsingEncoding:NSUTF8StringEncoding];
+		if (!cs)
+			return 0;
 		NSMutableString* seconds = [[NSMutableString alloc] init];
 		char* ptr = (char*)cs;
 		while (*ptr != 10)
