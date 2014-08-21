@@ -86,7 +86,7 @@
 	if (r.location != NSNotFound)
 	{
 		NSString* durationString = [string substringFromIndex:r.location + 9];
-		const char* cs = [durationString cStringUsingEncoding:NSASCIIStringEncoding];
+		const char* cs = [durationString cStringUsingEncoding:NSUTF8StringEncoding];
 		NSMutableString* seconds = [[NSMutableString alloc] init];
 		char* ptr = (char*)cs;
 		while (*ptr != 10)
