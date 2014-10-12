@@ -91,7 +91,7 @@
 			return 0;
 		NSMutableString* seconds = [[NSMutableString alloc] init];
 		char* ptr = (char*)cs;
-		while (*ptr != 10)
+		while ((ptr) && (*ptr != 10))
 			[seconds appendFormat:@"%c", *ptr++];
 		return (NSInteger)floor([seconds doubleValue]);
 	}
@@ -241,8 +241,11 @@
 			NSString* tmp = nil;
 			switch (ich)
 			{
+				case 1:
+					tmp = @"1.0 [Mono]";
+					break;
 				case 2:
-					tmp = @"2.0";
+					tmp = @"2.0 [Stereo]";
 					break;
 				case 3:
 					tmp = @"2.1";
