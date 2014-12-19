@@ -13,6 +13,7 @@
 		1E5AE87B18BC9957004FB76C /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E5AE87A18BC9957004FB76C /* CoreServices.framework */; };
 		1E5AE87D18BC9957004FB76C /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E5AE87C18BC9957004FB76C /* CoreFoundation.framework */; };
 		1E5AE89118BC9A6B004FB76C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E5AE89018BC9A6B004FB76C /* Foundation.framework */; };
+		1E9AEA181A443DD800B9824F /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = 1E9AEA161A443DD800B9824F /* style.css */; };
 		1EDA72B318FD692B0079C881 /* GeneratePreviewForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA72AC18FD692B0079C881 /* GeneratePreviewForURL.m */; };
 		1EDA72B418FD692B0079C881 /* GenerateThumbnailForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA72AD18FD692B0079C881 /* GenerateThumbnailForURL.m */; };
 		1EDA72B518FD692B0079C881 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA72AE18FD692B0079C881 /* main.c */; };
@@ -21,7 +22,6 @@
 		1EDA72B818FD692B0079C881 /* Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA72B118FD692B0079C881 /* Tools.m */; };
 		1EDA72BB18FD6B910079C881 /* MediainfoOutputParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EDA72B918FD6B910079C881 /* MediainfoOutputParser.h */; };
 		1EDA72BC18FD6B910079C881 /* MediainfoOutputParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA72BA18FD6B910079C881 /* MediainfoOutputParser.m */; };
-		1EDA72BE18FD74C90079C881 /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = 1EDA72BD18FD74C90079C881 /* style.css */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -45,7 +45,8 @@
 		1E5AE87A18BC9957004FB76C /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		1E5AE87C18BC9957004FB76C /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		1E5AE89018BC9A6B004FB76C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		1EDA72AA18FD692B0079C881 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1E9AEA151A443DD800B9824F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = rsrc/Info.plist; sourceTree = SOURCE_ROOT; };
+		1E9AEA161A443DD800B9824F /* style.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = style.css; path = rsrc/style.css; sourceTree = SOURCE_ROOT; };
 		1EDA72AC18FD692B0079C881 /* GeneratePreviewForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratePreviewForURL.m; sourceTree = "<group>"; };
 		1EDA72AD18FD692B0079C881 /* GenerateThumbnailForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenerateThumbnailForURL.m; sourceTree = "<group>"; };
 		1EDA72AE18FD692B0079C881 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
@@ -54,7 +55,6 @@
 		1EDA72B118FD692B0079C881 /* Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tools.m; sourceTree = "<group>"; };
 		1EDA72B918FD6B910079C881 /* MediainfoOutputParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediainfoOutputParser.h; sourceTree = "<group>"; };
 		1EDA72BA18FD6B910079C881 /* MediainfoOutputParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediainfoOutputParser.m; sourceTree = "<group>"; };
-		1EDA72BD18FD74C90079C881 /* style.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,7 +77,7 @@
 			isa = PBXGroup;
 			children = (
 				1EDA72AB18FD692B0079C881 /* src */,
-				1EDA72A918FD692B0079C881 /* resources */,
+				1EDA72A918FD692B0079C881 /* rsrc */,
 				1E5AE87518BC9957004FB76C /* Frameworks */,
 				1E5AE87418BC9957004FB76C /* Products */,
 			);
@@ -103,12 +103,13 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		1EDA72A918FD692B0079C881 /* resources */ = {
+		1EDA72A918FD692B0079C881 /* rsrc */ = {
 			isa = PBXGroup;
 			children = (
-				1EDA72AA18FD692B0079C881 /* Info.plist */,
-				1EDA72BD18FD74C90079C881 /* style.css */,
+				1E9AEA151A443DD800B9824F /* Info.plist */,
+				1E9AEA161A443DD800B9824F /* style.css */,
 			);
+			name = rsrc;
 			path = resources;
 			sourceTree = "<group>";
 		};
@@ -193,7 +194,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1EDA72BE18FD74C90079C881 /* style.css in Resources */,
+				1E9AEA181A443DD800B9824F /* style.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,7 +315,7 @@
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
-				INFOPLIST_FILE = resources/Info.plist;
+				INFOPLIST_FILE = rsrc/Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -353,7 +354,7 @@
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
-				INFOPLIST_FILE = resources/Info.plist;
+				INFOPLIST_FILE = rsrc/Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
