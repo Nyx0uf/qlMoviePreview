@@ -10,6 +10,7 @@
 
 #import <QuickLook/QuickLook.h>
 #import "Tools.h"
+#import <dlfcn.h>
 
 
 OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options);
@@ -49,6 +50,17 @@ OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview,
 		if (QLPreviewRequestIsCancelled(preview))
 			return kQLReturnNoError;
 
+		// Dynamically link to mediainfo once
+		static dispatch_once_t onceToken;
+		static void* _handle = NULL;
+		dispatch_once(&onceToken, ^{
+			CFBundleRef bundle = QLPreviewRequestGetGeneratorBundle(preview);
+			NSURL* burl = CFBridgingRelease(CFBundleCopyExecutableURL(bundle));
+			NSURL* libURL = [[burl URLByDeletingLastPathComponent] URLByAppendingPathComponent:@"libmediainfo.0.dylib"];
+			_handle = dlopen([[libURL path] UTF8String], RTLD_LAZY);
+			if (NULL == _handle)
+				NSLog(@"FAILURELOL");
+		});
 		// Get the movie properties
 		NSDictionary* mediainfo = [Tools mediainfoForFilepath:filepath];
 		if (!mediainfo)

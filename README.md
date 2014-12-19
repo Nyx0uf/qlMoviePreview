@@ -30,11 +30,11 @@ If you don't have [homebrew](http://brew.sh "homebrew website") already installe
 	> brew update
 
 
-#### 3. ffmpeg & mediainfo
+#### 3. ffmpeg
 
-Then you need [ffmpeg](https://www.ffmpeg.org/ "ffmpeg website") and [mediainfo](http://mediaarea.net/en/MediaInfo "mediainfo website").
+Then you need [ffmpeg](https://www.ffmpeg.org/ "ffmpeg website").
 
-	> brew install ffmpeg --with-tools media-info
+	> brew install ffmpeg --with-tools
 
 These binaries need to be in `/usr/local/bin`, so for example if you manually installed ffmpeg binary in another place, you will need to make a symlink.
 
@@ -42,11 +42,6 @@ These binaries need to be in `/usr/local/bin`, so for example if you manually in
 
 
 ### For normal people
-
-#### 1. mediainfo
-
-Download the latest version [here](http://mediaarea.net/en/MediaInfo/Download/Mac_OS "Mediainfo"), you want the **CLI** (middle line). Then launch the package installer and it should be good.
-
 
 #### 2. ffmpeg & ffprobe
 

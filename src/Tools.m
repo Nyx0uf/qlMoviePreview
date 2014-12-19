@@ -9,7 +9,7 @@
 
 
 #import "Tools.h"
-#import "MediainfoOutputParser.h"
+#import "MediainfoParser.h"
 #import <CommonCrypto/CommonDigest.h>
 
 
@@ -102,7 +102,7 @@
 +(NSDictionary*)mediainfoForFilepath:(NSString*)filepath
 {
 #define NYX_MEDIAINFO_SYMLINK_PATH @"/tmp/qlmoviepreview/tmp-symlink-for-mediainfo-to-be-happy-lulz"
-	// mediainfo can't handle paths with some characters, like '?!'...
+	// mediainfo can't handle paths with some characters, like '?!*'...
 	// So we create a symlink to make it happy... this is so moronic.
 	NSString* okFilepath = filepath;
 	if ([filepath rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"?!*"]].location != NSNotFound)
@@ -111,26 +111,13 @@
 			okFilepath = NYX_MEDIAINFO_SYMLINK_PATH;
 	}
 
-	// mediainfo can be installed via homebrew
-	// Output infos as XML
-	NSTask* task = [[NSTask alloc] init];
-	[task setLaunchPath:@"/usr/local/bin/mediainfo"];
-	[task setArguments:@[okFilepath, @"--Output=XML"]];
-	NSPipe* outputPipe = [NSPipe pipe];
-	[task setStandardOutput:outputPipe];
-	[task launch];
-	[task waitUntilExit];
+	// Parse the mediainfo XML output
+	MediainfoParser* parser = [[MediainfoParser alloc] initWithPath:okFilepath];
+	NSDictionary* tracks = [parser analyze];
+
 	// Remove the symlink, me -> zetsuboushita.
 	if ([okFilepath isEqualToString:NYX_MEDIAINFO_SYMLINK_PATH])
 		[[NSFileManager defaultManager] removeItemAtPath:NYX_MEDIAINFO_SYMLINK_PATH error:nil];
-
-	NSData* outputData = [[outputPipe fileHandleForReading] readDataToEndOfFile];
-	if (!outputData)
-		return nil;
-
-	// Parse the mediainfo XML output
-	MediainfoOutputParser* parser = [[MediainfoOutputParser alloc] initWithData:[[[NSString alloc] initWithData:outputData encoding:NSISOLatin1StringEncoding] dataUsingEncoding:NSUTF8StringEncoding]];
-	NSDictionary* tracks = [parser parse];
 
 	/* General file info */
 	NSMutableDictionary* outDict = [[NSMutableDictionary alloc] init];

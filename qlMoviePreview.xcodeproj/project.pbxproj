@@ -14,14 +14,17 @@
 		1E5AE87D18BC9957004FB76C /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E5AE87C18BC9957004FB76C /* CoreFoundation.framework */; };
 		1E5AE89118BC9A6B004FB76C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E5AE89018BC9A6B004FB76C /* Foundation.framework */; };
 		1E9AEA181A443DD800B9824F /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = 1E9AEA161A443DD800B9824F /* style.css */; };
+		1E9AEA211A443E5600B9824F /* MediainfoParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E9AEA1F1A443E5600B9824F /* MediainfoParser.h */; };
+		1E9AEA221A443E5600B9824F /* MediainfoParser.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1E9AEA201A443E5600B9824F /* MediainfoParser.mm */; };
+		1E9AEA391A4456B800B9824F /* libmediainfo.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E9AEA371A4456B800B9824F /* libmediainfo.0.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		1E9AEA3A1A4456B800B9824F /* MediaInfoDLL.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E9AEA381A4456B800B9824F /* MediaInfoDLL.h */; };
+		1E9AEA3C1A4456DE00B9824F /* libmediainfo.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1E9AEA371A4456B800B9824F /* libmediainfo.0.dylib */; };
 		1EDA72B318FD692B0079C881 /* GeneratePreviewForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA72AC18FD692B0079C881 /* GeneratePreviewForURL.m */; };
 		1EDA72B418FD692B0079C881 /* GenerateThumbnailForURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA72AD18FD692B0079C881 /* GenerateThumbnailForURL.m */; };
 		1EDA72B518FD692B0079C881 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA72AE18FD692B0079C881 /* main.c */; };
 		1EDA72B618FD692B0079C881 /* Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 1EDA72AF18FD692B0079C881 /* Prefix.pch */; };
 		1EDA72B718FD692B0079C881 /* Tools.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EDA72B018FD692B0079C881 /* Tools.h */; };
 		1EDA72B818FD692B0079C881 /* Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA72B118FD692B0079C881 /* Tools.m */; };
-		1EDA72BB18FD6B910079C881 /* MediainfoOutputParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EDA72B918FD6B910079C881 /* MediainfoOutputParser.h */; };
-		1EDA72BC18FD6B910079C881 /* MediainfoOutputParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA72BA18FD6B910079C881 /* MediainfoOutputParser.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -36,6 +39,16 @@
 			name = "Install plugin";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1E9AEA3B1A4456D500B9824F /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				1E9AEA3C1A4456DE00B9824F /* libmediainfo.0.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -47,14 +60,16 @@
 		1E5AE89018BC9A6B004FB76C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1E9AEA151A443DD800B9824F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = rsrc/Info.plist; sourceTree = SOURCE_ROOT; };
 		1E9AEA161A443DD800B9824F /* style.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = style.css; path = rsrc/style.css; sourceTree = SOURCE_ROOT; };
+		1E9AEA1F1A443E5600B9824F /* MediainfoParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediainfoParser.h; sourceTree = "<group>"; };
+		1E9AEA201A443E5600B9824F /* MediainfoParser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MediainfoParser.mm; sourceTree = "<group>"; };
+		1E9AEA371A4456B800B9824F /* libmediainfo.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libmediainfo.0.dylib; sourceTree = "<group>"; };
+		1E9AEA381A4456B800B9824F /* MediaInfoDLL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaInfoDLL.h; sourceTree = "<group>"; };
 		1EDA72AC18FD692B0079C881 /* GeneratePreviewForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratePreviewForURL.m; sourceTree = "<group>"; };
 		1EDA72AD18FD692B0079C881 /* GenerateThumbnailForURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenerateThumbnailForURL.m; sourceTree = "<group>"; };
 		1EDA72AE18FD692B0079C881 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		1EDA72AF18FD692B0079C881 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		1EDA72B018FD692B0079C881 /* Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tools.h; sourceTree = "<group>"; };
 		1EDA72B118FD692B0079C881 /* Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tools.m; sourceTree = "<group>"; };
-		1EDA72B918FD6B910079C881 /* MediainfoOutputParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediainfoOutputParser.h; sourceTree = "<group>"; };
-		1EDA72BA18FD6B910079C881 /* MediainfoOutputParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediainfoOutputParser.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +78,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E5AE87918BC9957004FB76C /* ApplicationServices.framework in Frameworks */,
+				1E9AEA391A4456B800B9824F /* libmediainfo.0.dylib in Frameworks */,
 				1E5AE89118BC9A6B004FB76C /* Foundation.framework in Frameworks */,
 				1E5AE87D18BC9957004FB76C /* CoreFoundation.framework in Frameworks */,
 				1E5AE87718BC9957004FB76C /* QuickLook.framework in Frameworks */,
@@ -78,6 +94,7 @@
 			children = (
 				1EDA72AB18FD692B0079C881 /* src */,
 				1EDA72A918FD692B0079C881 /* rsrc */,
+				1E9AEA191A443E3900B9824F /* deps */,
 				1E5AE87518BC9957004FB76C /* Frameworks */,
 				1E5AE87418BC9957004FB76C /* Products */,
 			);
@@ -103,6 +120,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		1E9AEA191A443E3900B9824F /* deps */ = {
+			isa = PBXGroup;
+			children = (
+				1E9AEA1A1A443E3900B9824F /* mediainfo */,
+			);
+			path = deps;
+			sourceTree = "<group>";
+		};
+		1E9AEA1A1A443E3900B9824F /* mediainfo */ = {
+			isa = PBXGroup;
+			children = (
+				1E9AEA371A4456B800B9824F /* libmediainfo.0.dylib */,
+				1E9AEA381A4456B800B9824F /* MediaInfoDLL.h */,
+			);
+			path = mediainfo;
+			sourceTree = "<group>";
+		};
 		1EDA72A918FD692B0079C881 /* rsrc */ = {
 			isa = PBXGroup;
 			children = (
@@ -116,14 +150,14 @@
 		1EDA72AB18FD692B0079C881 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				1E9AEA1F1A443E5600B9824F /* MediainfoParser.h */,
+				1E9AEA201A443E5600B9824F /* MediainfoParser.mm */,
 				1EDA72AF18FD692B0079C881 /* Prefix.pch */,
 				1EDA72AE18FD692B0079C881 /* main.c */,
 				1EDA72AC18FD692B0079C881 /* GeneratePreviewForURL.m */,
 				1EDA72AD18FD692B0079C881 /* GenerateThumbnailForURL.m */,
 				1EDA72B018FD692B0079C881 /* Tools.h */,
 				1EDA72B118FD692B0079C881 /* Tools.m */,
-				1EDA72B918FD6B910079C881 /* MediainfoOutputParser.h */,
-				1EDA72BA18FD6B910079C881 /* MediainfoOutputParser.m */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -135,8 +169,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E9AEA3A1A4456B800B9824F /* MediaInfoDLL.h in Headers */,
+				1E9AEA211A443E5600B9824F /* MediainfoParser.h in Headers */,
 				1EDA72B718FD692B0079C881 /* Tools.h in Headers */,
-				1EDA72BB18FD6B910079C881 /* MediainfoOutputParser.h in Headers */,
 				1EDA72B618FD692B0079C881 /* Prefix.pch in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -152,6 +187,7 @@
 				1E5AE86E18BC9957004FB76C /* Frameworks */,
 				1E5AE86F18BC9957004FB76C /* Headers */,
 				1E5AE87018BC9957004FB76C /* Resources */,
+				1E9AEA3B1A4456D500B9824F /* CopyFiles */,
 				1E44A48718FFFE5F009F4EB7 /* Install plugin */,
 			);
 			buildRules = (
@@ -207,9 +243,9 @@
 			files = (
 				1EDA72B318FD692B0079C881 /* GeneratePreviewForURL.m in Sources */,
 				1EDA72B418FD692B0079C881 /* GenerateThumbnailForURL.m in Sources */,
-				1EDA72BC18FD6B910079C881 /* MediainfoOutputParser.m in Sources */,
 				1EDA72B518FD692B0079C881 /* main.c in Sources */,
 				1EDA72B818FD692B0079C881 /* Tools.m in Sources */,
+				1E9AEA221A443E5600B9824F /* MediainfoParser.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,7 +339,7 @@
 				GCC_PREFIX_HEADER = src/Prefix.pch;
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -317,8 +353,14 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				INFOPLIST_FILE = rsrc/Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
+				LD_RUNPATH_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/deps/mediainfo",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				WRAPPER_EXTENSION = qlgenerator;
 			};
 			name = Debug;
@@ -342,7 +384,7 @@
 				GCC_PREFIX_HEADER = src/Prefix.pch;
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -356,8 +398,14 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				INFOPLIST_FILE = rsrc/Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
+				LD_RUNPATH_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/deps/mediainfo",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				WRAPPER_EXTENSION = qlgenerator;
 			};
 			name = Release;
