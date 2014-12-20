@@ -70,11 +70,11 @@
 		
 			if ([line isEqualToString:@"General"])
 				trackType = NYXTrackTypeGeneral;
-			else if ([line isEqualToString:@"Video"])
+			else if ([line rangeOfString:@"Video"].location != NSNotFound)
 				trackType = NYXTrackTypeVideo;
-			else if ([line isEqualToString:@"Audio"])
+			else if ([line rangeOfString:@"Audio"].location != NSNotFound)
 				trackType = NYXTrackTypeAudio;
-			else if ([line isEqualToString:@"Text"])
+			else if ([line rangeOfString:@"Text"].location != NSNotFound)
 				trackType = NYXTrackTypeText;
 			else
 			{
