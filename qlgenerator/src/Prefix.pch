@@ -1,0 +1,17 @@
+//
+//  Prefix.pch
+//  qlMoviePreview
+//
+//  Created by @Nyx0uf on 15/04/14.
+//  Copyright (c) 2014 Nyx0uf. All rights reserved.
+//  www.cocoaintheshell.com
+//
+
+
+#import <CoreFoundation/CoreFoundation.h>
+
+#if (__MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_9)
+#error "Must target at least Mac OS X 10.9"
+#endif
+
+// To enable logging --> defaults write -g QLEnableLogging NO
