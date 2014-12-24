@@ -9,8 +9,8 @@
 
 
 #import <QuickLook/QuickLook.h>
-#import "Tools.h"
 #import "NYXMovie.h"
+#import "Tools.h"
 
 
 OSStatus GenerateThumbnailForURL(void* thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options, CGSize maxSize);

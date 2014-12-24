@@ -17,6 +17,4 @@
 
 +(NSString*)md5String:(NSString*)string;
 
-+(NSDictionary*)mediainfoForFilepath:(NSString*)filepath;
-
 @end

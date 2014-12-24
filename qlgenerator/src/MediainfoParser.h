@@ -69,8 +69,10 @@ typedef NS_ENUM(NSInteger, NYXTrackType)
 
 @interface MediainfoParser : NSObject
 
--(instancetype)initWithPath:(NSString*)string;
+-(instancetype)initWithFilepath:(NSString*)filepath;
 
 -(NSDictionary*)analyze;
+
++(NSDictionary*)format:(NSDictionary*)tracks;
 
 @end

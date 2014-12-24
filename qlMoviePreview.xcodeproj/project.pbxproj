@@ -35,6 +35,24 @@
 		1EA913221A49BAEF00E549E3 /* VideoDecodeAcceleration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA913211A49BAEF00E549E3 /* VideoDecodeAcceleration.framework */; };
 		1ECBF5311A4ABC6500CBEF22 /* NYXMovie.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ECBF52F1A4ABC6500CBEF22 /* NYXMovie.h */; };
 		1ECBF5321A4ABC6500CBEF22 /* NYXMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ECBF5301A4ABC6500CBEF22 /* NYXMovie.m */; };
+		1ECBF54C1A4ACEFD00CBEF22 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1ECBF5481A4ACEFD00CBEF22 /* Info.plist */; };
+		1ECBF54F1A4ACF5200CBEF22 /* GetMetadataForFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ECBF54A1A4ACEFD00CBEF22 /* GetMetadataForFile.m */; };
+		1ECBF5501A4ACF5200CBEF22 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ECBF54B1A4ACEFD00CBEF22 /* main.m */; };
+		1ECBF5511A4ACF5D00CBEF22 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E5AE87818BC9957004FB76C /* ApplicationServices.framework */; };
+		1ECBF5521A4ACF5D00CBEF22 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E5AE87A18BC9957004FB76C /* CoreServices.framework */; };
+		1ECBF5531A4ACF5D00CBEF22 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA9131F1A49BAE200E549E3 /* CoreVideo.framework */; };
+		1ECBF5541A4ACF5D00CBEF22 /* VideoDecodeAcceleration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA913211A49BAEF00E549E3 /* VideoDecodeAcceleration.framework */; };
+		1ECBF5551A4ACF6600CBEF22 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA913151A49BAB900E549E3 /* libavcodec.a */; };
+		1ECBF5561A4ACF6600CBEF22 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA913161A49BAB900E549E3 /* libavformat.a */; };
+		1ECBF5571A4ACF6600CBEF22 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA913171A49BAB900E549E3 /* libavutil.a */; };
+		1ECBF5581A4ACF6600CBEF22 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA913181A49BAB900E549E3 /* libswresample.a */; };
+		1ECBF5591A4ACF6600CBEF22 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA913191A49BAB900E549E3 /* libswscale.a */; };
+		1ECBF55A1A4ACF6600CBEF22 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E15214A1A486DDF00CFA094 /* libiconv.dylib */; };
+		1ECBF55B1A4ACF6600CBEF22 /* liblzma.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA901351A49A46E00E549E3 /* liblzma.dylib */; };
+		1ECBF55C1A4ACF6600CBEF22 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA901331A49A46500E549E3 /* libbz2.dylib */; };
+		1ECBF55D1A4ACF6600CBEF22 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA901311A49A45C00E549E3 /* libz.dylib */; };
+		1ECBF55E1A4AD04A00CBEF22 /* NYXMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ECBF5301A4ABC6500CBEF22 /* NYXMovie.m */; };
+		1ECBF55F1A4AD04D00CBEF22 /* Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E1521271A48614900CFA094 /* Tools.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -80,6 +98,10 @@
 		1EA913211A49BAEF00E549E3 /* VideoDecodeAcceleration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoDecodeAcceleration.framework; path = System/Library/Frameworks/VideoDecodeAcceleration.framework; sourceTree = SDKROOT; };
 		1ECBF52F1A4ABC6500CBEF22 /* NYXMovie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYXMovie.h; sourceTree = "<group>"; };
 		1ECBF5301A4ABC6500CBEF22 /* NYXMovie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYXMovie.m; sourceTree = "<group>"; };
+		1ECBF5371A4ACEAA00CBEF22 /* mdMoviePreview.mdimporter */ = {isa = PBXFileReference; explicitFileType = "wrapper.spotlight-importer"; includeInIndex = 0; path = mdMoviePreview.mdimporter; sourceTree = BUILT_PRODUCTS_DIR; };
+		1ECBF5481A4ACEFD00CBEF22 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1ECBF54A1A4ACEFD00CBEF22 /* GetMetadataForFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetMetadataForFile.m; sourceTree = "<group>"; };
+		1ECBF54B1A4ACEFD00CBEF22 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +124,26 @@
 				1EA901341A49A46500E549E3 /* libbz2.dylib in Frameworks */,
 				1EA901321A49A45C00E549E3 /* libz.dylib in Frameworks */,
 				1E1521411A48663800CFA094 /* libmediainfo.0.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1ECBF5341A4ACEAA00CBEF22 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1ECBF5511A4ACF5D00CBEF22 /* ApplicationServices.framework in Frameworks */,
+				1ECBF5521A4ACF5D00CBEF22 /* CoreServices.framework in Frameworks */,
+				1ECBF5531A4ACF5D00CBEF22 /* CoreVideo.framework in Frameworks */,
+				1ECBF5541A4ACF5D00CBEF22 /* VideoDecodeAcceleration.framework in Frameworks */,
+				1ECBF5551A4ACF6600CBEF22 /* libavcodec.a in Frameworks */,
+				1ECBF5561A4ACF6600CBEF22 /* libavformat.a in Frameworks */,
+				1ECBF5571A4ACF6600CBEF22 /* libavutil.a in Frameworks */,
+				1ECBF5581A4ACF6600CBEF22 /* libswresample.a in Frameworks */,
+				1ECBF5591A4ACF6600CBEF22 /* libswscale.a in Frameworks */,
+				1ECBF55A1A4ACF6600CBEF22 /* libiconv.dylib in Frameworks */,
+				1ECBF55B1A4ACF6600CBEF22 /* liblzma.dylib in Frameworks */,
+				1ECBF55C1A4ACF6600CBEF22 /* libbz2.dylib in Frameworks */,
+				1ECBF55D1A4ACF6600CBEF22 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,6 +188,7 @@
 		1E5AE86818BC9957004FB76C = {
 			isa = PBXGroup;
 			children = (
+				1ECBF5461A4ACEFD00CBEF22 /* mdimporter */,
 				1E15211B1A48614900CFA094 /* qlgenerator */,
 				1E9AEA191A443E3900B9824F /* deps */,
 				1E5AE87518BC9957004FB76C /* Frameworks */,
@@ -157,6 +200,7 @@
 			isa = PBXGroup;
 			children = (
 				1E5AE87318BC9957004FB76C /* qlMoviePreview.qlgenerator */,
+				1ECBF5371A4ACEAA00CBEF22 /* mdMoviePreview.mdimporter */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -199,6 +243,32 @@
 			path = mediainfo;
 			sourceTree = "<group>";
 		};
+		1ECBF5461A4ACEFD00CBEF22 /* mdimporter */ = {
+			isa = PBXGroup;
+			children = (
+				1ECBF5471A4ACEFD00CBEF22 /* rsrc */,
+				1ECBF5491A4ACEFD00CBEF22 /* src */,
+			);
+			path = mdimporter;
+			sourceTree = "<group>";
+		};
+		1ECBF5471A4ACEFD00CBEF22 /* rsrc */ = {
+			isa = PBXGroup;
+			children = (
+				1ECBF5481A4ACEFD00CBEF22 /* Info.plist */,
+			);
+			path = rsrc;
+			sourceTree = "<group>";
+		};
+		1ECBF5491A4ACEFD00CBEF22 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				1ECBF54A1A4ACEFD00CBEF22 /* GetMetadataForFile.m */,
+				1ECBF54B1A4ACEFD00CBEF22 /* main.m */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -236,6 +306,23 @@
 			productReference = 1E5AE87318BC9957004FB76C /* qlMoviePreview.qlgenerator */;
 			productType = "com.apple.product-type.bundle";
 		};
+		1ECBF5361A4ACEAA00CBEF22 /* mdMoviePreview */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1ECBF5451A4ACEAA00CBEF22 /* Build configuration list for PBXNativeTarget "mdMoviePreview" */;
+			buildPhases = (
+				1ECBF5331A4ACEAA00CBEF22 /* Sources */,
+				1ECBF5341A4ACEAA00CBEF22 /* Frameworks */,
+				1ECBF5351A4ACEAA00CBEF22 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = mdMoviePreview;
+			productName = mdMoviePreview;
+			productReference = 1ECBF5371A4ACEAA00CBEF22 /* mdMoviePreview.mdimporter */;
+			productType = "com.apple.product-type.spotlight-importer";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -244,6 +331,11 @@
 			attributes = {
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = MacGeneration;
+				TargetAttributes = {
+					1ECBF5361A4ACEAA00CBEF22 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+				};
 			};
 			buildConfigurationList = 1E5AE86C18BC9957004FB76C /* Build configuration list for PBXProject "qlMoviePreview" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -258,6 +350,7 @@
 			projectRoot = "";
 			targets = (
 				1E5AE87218BC9957004FB76C /* qlMoviePreview */,
+				1ECBF5361A4ACEAA00CBEF22 /* mdMoviePreview */,
 			);
 		};
 /* End PBXProject section */
@@ -267,7 +360,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1ECBF54C1A4ACEFD00CBEF22 /* Info.plist in Resources */,
 				1E1521291A48614900CFA094 /* style.css in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1ECBF5351A4ACEAA00CBEF22 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,6 +385,17 @@
 				1E15212B1A48614900CFA094 /* GenerateThumbnailForURL.m in Sources */,
 				1E15212C1A48614900CFA094 /* main.m in Sources */,
 				1E15212E1A48614900CFA094 /* MediainfoParser.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1ECBF5331A4ACEAA00CBEF22 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1ECBF54F1A4ACF5200CBEF22 /* GetMetadataForFile.m in Sources */,
+				1ECBF5501A4ACF5200CBEF22 /* main.m in Sources */,
+				1ECBF55E1A4AD04A00CBEF22 /* NYXMovie.m in Sources */,
+				1ECBF55F1A4AD04D00CBEF22 /* Tools.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -463,6 +575,63 @@
 			};
 			name = Release;
 		};
+		1ECBF5431A4ACEAA00CBEF22 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				HEADER_SEARCH_PATHS = (
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/include,
+				);
+				INFOPLIST_FILE = mdimporter/rsrc/Info.plist;
+				INSTALL_PATH = "@executable_path/../Contents/Library/Spotlight";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/deps";
+				LIBRARY_STYLE = BUNDLE;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = mdimporter;
+			};
+			name = Debug;
+		};
+		1ECBF5441A4ACEAA00CBEF22 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				HEADER_SEARCH_PATHS = (
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/include,
+				);
+				INFOPLIST_FILE = mdimporter/rsrc/Info.plist;
+				INSTALL_PATH = "@executable_path/../Contents/Library/Spotlight";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/deps";
+				LIBRARY_STYLE = BUNDLE;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = mdimporter;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -480,6 +649,15 @@
 			buildConfigurations = (
 				1E5AE88E18BC9957004FB76C /* Debug */,
 				1E5AE88F18BC9957004FB76C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1ECBF5451A4ACEAA00CBEF22 /* Build configuration list for PBXNativeTarget "mdMoviePreview" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1ECBF5431A4ACEAA00CBEF22 /* Debug */,
+				1ECBF5441A4ACEAA00CBEF22 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

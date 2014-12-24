@@ -169,4 +169,15 @@
 	return ret;
 }
 
+#pragma mark - Getters
+-(double)getDuration
+{
+	return (double)((double)_fmt_ctx->duration / AV_TIME_BASE);
+}
+
+-(int)getBitRate
+{
+	return _fmt_ctx->bit_rate;
+}
+
 @end

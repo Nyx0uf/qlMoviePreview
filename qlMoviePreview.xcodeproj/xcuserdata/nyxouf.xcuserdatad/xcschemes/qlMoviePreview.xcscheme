@@ -39,15 +39,15 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
-      <PathRunnable
-         FilePath = "/System/Library/Frameworks/QuickLook.framework/Versions/A/Resources/quicklookd.app/Contents/MacOS/qlmanage">
-      </PathRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "-r"
-            isEnabled = "YES">
-         </CommandLineArgument>
-      </CommandLineArguments>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "1E5AE87218BC9957004FB76C"
+            BuildableName = "qlMoviePreview.qlgenerator"
+            BlueprintName = "qlMoviePreview"
+            ReferencedContainer = "container:qlMoviePreview.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
