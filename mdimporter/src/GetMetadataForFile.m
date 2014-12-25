@@ -37,10 +37,9 @@ Boolean GetMetadataForFile(void* thisInterface, CFMutableDictionaryRef attribute
 		{
 			return FALSE;
 		}
-
+	
 		NSMutableDictionary* attrs = (__bridge NSMutableDictionary*)attributes;
-		attrs[(__bridge NSString*)kMDItemDurationSeconds] = @([movie getDuration]);
-		attrs[(__bridge NSString*)kMDItemTotalBitRate] = @([movie getBitRate]);
+		[movie fillDictionary:attrs];
 	
 		return TRUE;
     }

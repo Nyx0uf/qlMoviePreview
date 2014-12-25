@@ -24,8 +24,6 @@ typedef struct _nyx_size_struct
 
 -(bool)createThumbnailAtPath:(NSString*)path ofSize:(NYXSize)size atPosition:(int64_t)position;
 
--(double)getDuration;
-
--(int)getBitRate;
+-(void)fillDictionary:(NSMutableDictionary*)attrs;
 
 @end

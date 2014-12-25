@@ -169,15 +169,156 @@
 	return ret;
 }
 
-#pragma mark - Getters
--(double)getDuration
+-(void)fillDictionary:(NSMutableDictionary*)attrs
 {
-	return (double)((double)_fmt_ctx->duration / AV_TIME_BASE);
-}
+	// Duration
+	attrs[(__bridge NSString*)kMDItemDurationSeconds] = @((double)((double)_fmt_ctx->duration / AV_TIME_BASE));
+	// Bit rate
+	attrs[(__bridge NSString*)kMDItemTotalBitRate] = @(_fmt_ctx->bit_rate);
+	
+	AVDictionaryEntry* tag = NULL;
 
--(int)getBitRate
-{
-	return _fmt_ctx->bit_rate;
+	while ((tag = av_dict_get(_fmt_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
+	{
+		if (!strlen(tag->value)) // just to be sure
+			continue;
+
+		if (!strcasecmp(tag->key, "encoder"))
+			attrs[(__bridge NSString*)kMDItemEncodingApplications] = @(tag->value);
+		else if (!strcasecmp(tag->key, "title"))
+			attrs[(__bridge NSString*)kMDItemTitle] = @(tag->value);
+	}
+
+	NSMutableArray* codecs = [[NSMutableArray alloc] init];
+	for (int stream_idx = 0; stream_idx < _fmt_ctx->nb_streams; stream_idx++)
+	{
+		AVStream* stream = _fmt_ctx->streams[stream_idx];
+		AVCodecContext* dec_ctx = stream->codec;
+
+		if (dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO)
+		{
+			if (dec_ctx->bit_rate > 0 && !attrs[(__bridge NSString*)kMDItemAudioBitRate])
+				attrs[(__bridge NSString*)kMDItemAudioBitRate] = @(dec_ctx->bit_rate);
+			if (dec_ctx->channels > 0 && !attrs[(__bridge NSString*)kMDItemAudioChannelCount])
+			{
+				NSNumber* channels;
+				switch (dec_ctx->channels)
+				{
+					case 3:
+						channels = @2.1f;
+						break;
+					case 6:
+						channels = @5.1f;
+						break;
+					case 7:
+						channels = @6.1f;
+						break;
+					case 8:
+						channels = @7.1f;
+						break;
+					default:
+						channels = [NSNumber numberWithInt:dec_ctx->channels];
+				}
+				attrs[(__bridge NSString*)kMDItemAudioChannelCount] = channels;
+			}
+			if (dec_ctx->sample_rate > 0 && !attrs[(__bridge NSString*)kMDItemAudioSampleRate])
+				attrs[(__bridge NSString*)kMDItemAudioSampleRate] = @(dec_ctx->sample_rate);
+		}
+		else if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
+		{
+			if (dec_ctx->bit_rate > 0 && !attrs[(__bridge NSString*)kMDItemVideoBitRate])
+				attrs[(__bridge NSString*)kMDItemVideoBitRate] = @(dec_ctx->bit_rate);
+			if (dec_ctx->height > 0 && !attrs[(__bridge NSString*)kMDItemPixelHeight])
+			{
+				attrs[(__bridge NSString*)kMDItemPixelHeight] = @(dec_ctx->height);
+				AVRational sar = av_guess_sample_aspect_ratio(_fmt_ctx, stream, NULL);
+				if (sar.num && sar.den)
+					attrs[(__bridge NSString*)kMDItemPixelWidth] = @(av_rescale(dec_ctx->width, sar.num, sar.den));
+				else
+					attrs[(__bridge NSString*)kMDItemPixelWidth] = @(dec_ctx->width);
+			}
+		}
+		else if (dec_ctx->codec_type == AVMEDIA_TYPE_SUBTITLE)
+		{
+			if (stream->disposition & AV_DISPOSITION_FORCED)
+				continue; // Don't count forced subtitiles since they're effectively part of the video
+		}
+		else
+			continue;
+		
+		AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
+		if (codec)
+		{
+			const char* cname;
+			switch (codec->id)
+			{
+				case AV_CODEC_ID_H263:
+					cname = "H.263";
+					break;
+				case AV_CODEC_ID_H263P:
+					cname = "H.263+";
+					break;
+				case AV_CODEC_ID_H264:
+					cname = "H.264";
+					break;
+				case AV_CODEC_ID_HEVC:
+					cname = "H.265";
+					break;
+				case AV_CODEC_ID_MJPEG:
+					cname = "Motion JPEG";
+					break;
+				case AV_CODEC_ID_VORBIS:
+					cname = "Vorbis";
+					break;
+				case AV_CODEC_ID_AAC:
+					cname = "AAC";
+					break;
+				case AV_CODEC_ID_AC3:
+					cname = "AC-3";
+					break;
+				case AV_CODEC_ID_DTS:
+					cname = "DTS";
+					break;
+				case AV_CODEC_ID_TRUEHD:
+					cname = "TrueHD";
+					break;
+				case AV_CODEC_ID_FLAC:
+					cname = "FLAC";
+					break;
+				case AV_CODEC_ID_MP2:
+					cname = "MPEG Layer 2";
+					break;
+				case AV_CODEC_ID_MP3:
+					cname = "MPEG Layer 3";
+					break;
+				case AV_CODEC_ID_ASS:
+					cname = "Advanced SubStation Alpha";
+					break;
+				case AV_CODEC_ID_SSA:
+					cname = "SubStation Alpha";
+					break;
+				case AV_CODEC_ID_HDMV_PGS_SUBTITLE:
+					cname = "PGS";
+					break;
+				case AV_CODEC_ID_SRT:
+					cname = "SubRip";
+					break;
+				default:
+					cname = codec->long_name ? codec->long_name : codec->name;
+				}
+			
+			if (cname)
+			{
+				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
+				NSString* s = profile ? [NSString stringWithFormat:@"%s [%s]", cname, profile] : [NSString stringWithUTF8String:cname];
+				if (![codecs containsObject:s])
+					[codecs addObject:s];
+			}
+		}
+	}
+
+	if ([codecs count])
+		attrs[(__bridge NSString*)kMDItemCodecs] = codecs;
 }
 
 @end
