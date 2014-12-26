@@ -17,12 +17,19 @@
 
 @implementation NYXMovie
 {
+	// Movie path
 	NSString* _filepath;
+	/// Format context
 	AVFormatContext* _fmt_ctx;
+	/// Codec context
 	AVCodecContext* _dec_ctx;
+	/// Current stream
 	AVStream* _stream;
+	/// Single frame for thumbnail
 	AVFrame* _frame;
+	/// Thumbnail
 	AVPicture _picture;
+	/// Current stream ID
 	int _stream_idx;
 }
 
@@ -99,7 +106,7 @@
 	if ([file_manager fileExistsAtPath:path])
 		return true;
 
-	// Set screenshot offset
+	// Set thumbnail offset
 	// If duration is unknown or less than 2 seconds, use the first frame
 	if (_fmt_ctx->duration > (2 * AV_TIME_BASE))
 	{
@@ -177,18 +184,10 @@
 	attrs[(__bridge NSString*)kMDItemDurationSeconds] = @((double)((double)_fmt_ctx->duration / AV_TIME_BASE));
 	// Bit rate
 	attrs[(__bridge NSString*)kMDItemTotalBitRate] = @(_fmt_ctx->bit_rate);
-	
-	AVDictionaryEntry* tag = NULL;
-	while ((tag = av_dict_get(_fmt_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
-	{
-		if (!strlen(tag->value)) // just to be sure
-			continue;
-
-		if (!strcasecmp(tag->key, "encoder"))
-			attrs[(__bridge NSString*)kMDItemEncodingApplications] = @(tag->value);
-		else if (!strcasecmp(tag->key, "title"))
-			attrs[(__bridge NSString*)kMDItemTitle] = @(tag->value);
-	}
+	// Title
+	AVDictionaryEntry* tag = av_dict_get(_fmt_ctx->metadata, "title", NULL, 0);
+	if (tag != NULL)
+		attrs[(__bridge NSString*)kMDItemTitle] = @(tag->value);
 
 	NSMutableArray* codecs = [[NSMutableArray alloc] init];
 	for (int stream_idx = 0; stream_idx < (int)_fmt_ctx->nb_streams; stream_idx++)
@@ -325,20 +324,20 @@
 -(NSDictionary*)informations
 {
 	/* General file info */
-	NSMutableDictionary* outDict = [[NSMutableDictionary alloc] init];
-	NSMutableString* strGeneral = [[NSMutableString alloc] initWithString:@"<h2 class=\"stitle\">General</h2><ul>"];
+	NSMutableDictionary* out_dict = [[NSMutableDictionary alloc] init];
+	NSMutableString* str_general = [[NSMutableString alloc] initWithString:@"<h2 class=\"stitle\">General</h2><ul>"];
 
 	// Movie name
 	AVDictionaryEntry* tag = av_dict_get(_fmt_ctx->metadata, "title", NULL, 0);
-	NSString* moviename = @"Undefined";
 	if (tag != NULL)
-		moviename = @(tag->value);
-	[strGeneral appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%@</span></li>", moviename];
+		[str_general appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%s</span></li>", tag->value];
+	else
+		[str_general appendString:@"<li><span class=\"st\">Title:</span> <span class=\"sc\"><em>Undefined</em></span></li>"];
 
 	// Duration
 	time_t timestamp = (time_t)((double)_fmt_ctx->duration / AV_TIME_BASE);
 	struct tm* ptm = localtime(&timestamp);
-	[strGeneral appendFormat:@"<li><span class=\"st\">Duration:</span> <span class=\"sc\">%d:%d:%d</span></li>", ptm->tm_hour, ptm->tm_min, ptm->tm_sec];
+	[str_general appendFormat:@"<li><span class=\"st\">Duration:</span> <span class=\"sc\">%d:%d:%d</span></li>", ptm->tm_hour, ptm->tm_min, ptm->tm_sec];
 	
 	// Filesize
 	struct stat st;
@@ -352,12 +351,12 @@
 		fmt = [[NSString alloc] initWithFormat:@"%.2fKb", (float)((float)st.st_size / 1024.0f)];
 	else // Less than 1Kb
 		fmt = [[NSString alloc] initWithFormat:@"%lldb", st.st_size];
-	[strGeneral appendFormat:@"<li><span class=\"st\">Size:</span> <span class=\"sc\">%@</span></li>", fmt];
-	[strGeneral appendString:@"</ul>"];
-	outDict[@"general"] = strGeneral;
+	[str_general appendFormat:@"<li><span class=\"st\">Size:</span> <span class=\"sc\">%@</span></li>", fmt];
+	[str_general appendString:@"</ul>"];
+	out_dict[@"general"] = str_general;
 
 	/* Video stream(s) */
-	NSMutableString* strVideo = [[NSMutableString alloc] init];
+	NSMutableString* str_video = [[NSMutableString alloc] init];
 	size_t nb_video_tracks = 0;
 	for (int stream_idx = 0; stream_idx < (int)_fmt_ctx->nb_streams; stream_idx++)
 	{
@@ -365,9 +364,15 @@
 		AVCodecContext* dec_ctx = stream->codec;
 		if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
 		{
+			/*AVDictionaryEntry* t = NULL;
+			while ((t = av_dict_get(stream->metadata, "", t, AV_DICT_IGNORE_SUFFIX)))
+			{
+				NSLog(@"%s -> %s", t->key, t->value);
+			}*/
+	
 			// Separator if multiple streams
 			if (nb_video_tracks > 0)
-				[strVideo appendString:@"<div class=\"sep\">----</div>"];
+				[str_video appendString:@"<div class=\"sep\">----</div>"];
 
 			// WIDTHxHEIGHT (aspect ratio)
 			const int height = dec_ctx->height;
@@ -376,49 +381,51 @@
 			if ((sar.num) && (sar.den))
 				width = (int)av_rescale(dec_ctx->width, sar.num, sar.den);
 			AVRational dar = stream->display_aspect_ratio;
-			[strVideo appendFormat:@"<li><span class=\"st\">Resolution:</span> <span class=\"sc\">%dx%d <em>(%d:%d)</em></span></li>", width, height, dar.num, dar.den];
+			[str_video appendFormat:@"<li><span class=\"st\">Resolution:</span> <span class=\"sc\">%dx%d <em>(%d:%d)</em></span></li>", width, height, dar.num, dar.den];
 
 			// Format, profile, bitrate, reframe
 			AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
 			if (codec != NULL)
 			{
-				[strVideo appendFormat:@"<li><span class=\"st\">Format/Codec:</span> <span class=\"sc\">%s", codec->long_name];
+				[str_video appendFormat:@"<li><span class=\"st\">Format/Codec:</span> <span class=\"sc\">%s", codec->long_name ? codec->long_name : codec->name];
 				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
 				if (profile != NULL)
-					[strVideo appendFormat:@" / %s", profile];
+					[str_video appendFormat:@" / %s", profile];
 				if (dec_ctx->bit_rate > 0)
-					[strVideo appendFormat:@" / %d Bps", dec_ctx->bit_rate];
+					[str_video appendFormat:@" / %.2f Kbps", (float)((float)dec_ctx->bit_rate / 1000.0f)];
 				if (dec_ctx->refs > 0)
-					[strVideo appendFormat:@" / %d ReF", dec_ctx->refs];
-				[strVideo appendString:@"</span></li>"];
+					[str_video appendFormat:@" / %d ReF", dec_ctx->refs];
+				[str_video appendString:@"</span></li>"];
 			}
 
 			// Framerate (mode)
 			AVRational fps = dec_ctx->framerate;
 			if ((fps.num) && (fps.den))
-				[strVideo appendFormat:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\">%.3f</span></li>", (float)((float)fps.num / (float)fps.den)];
+				[str_video appendFormat:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\">%.3f</span></li>", (float)((float)fps.num / (float)fps.den)];
 			else
-				[strVideo appendString:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\">Undefined</span></li>"];
+				[str_video appendString:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\"><em>Undefined</em></span></li>"];
 
-			// Bit depth
-			// TODO: find bit depth, the following code is wrong
-			//[strVideo appendFormat:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">%d</span></li>", dec_ctx->pix_fmt];
+			// TODO: find bit depth
+			//[strVideo appendFormat:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">%d</span></li>"];
 
 			// Title
 			tag = av_dict_get(stream->metadata, "title", NULL, 0);
 			if (tag != NULL)
-				[strVideo appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%s</span></li>", tag->value];
+				[str_video appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%s</span></li>", tag->value];
 
 			nb_video_tracks++;
 		}
 	}
-	[strVideo appendString:@"</ul>"];
-	NSMutableString* header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">Video%@</h2><ul>", (nb_video_tracks > 1) ? @"s" : @""];
-	[strVideo insertString:header atIndex:0];
-	outDict[@"video"] = strVideo;
+	if (nb_video_tracks > 0)
+	{
+		[str_video appendString:@"</ul>"];
+		NSMutableString* header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">Video%@</h2><ul>", (nb_video_tracks > 1) ? @"s" : @""];
+		[str_video insertString:header atIndex:0];
+		out_dict[@"video"] = str_video;
+	}
 
 	/* Audio stream(s) */
-	NSMutableString* strAudio = [[NSMutableString alloc] init];
+	NSMutableString* str_audio = [[NSMutableString alloc] init];
 	size_t nb_audio_tracks = 0;
 	for (int stream_idx = 0; stream_idx < (int)_fmt_ctx->nb_streams; stream_idx++)
 	{
@@ -426,32 +433,40 @@
 		AVCodecContext* dec_ctx = stream->codec;
 		if (dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO)
 		{
+			/*AVDictionaryEntry* t = NULL;
+			while ((t = av_dict_get(stream->metadata, "", t, AV_DICT_IGNORE_SUFFIX)))
+			{
+				NSLog(@"%s -> %s", t->key, t->value);
+			}*/
+
 			// Separator if multiple streams
 			if (nb_audio_tracks > 0)
-				[strAudio appendString:@"<div class=\"sep\">----</div>"];
+				[str_audio appendString:@"<div class=\"sep\">----</div>"];
 
 			// Language
 			tag = av_dict_get(stream->metadata, "language", NULL, 0);
 			if (tag != NULL)
-				[strAudio appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%s %@</span></li>", tag->value, (stream->disposition & AV_DISPOSITION_DEFAULT) ? @"<em>(Default)</em>" : @""];
+				[str_audio appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%s", tag->value];
 			else
-				[strAudio appendString:@"<li><span class=\"st\">Language:</span> <span class=\"sc\"><em>Undefined</em></span></li>"];
-		
+				[str_audio appendString:@"<li><span class=\"st\">Language:</span> <span class=\"sc\"><em>Undefined</em>"];
+			[str_audio appendFormat:@" %@ %@</span></li>", (stream->disposition & AV_DISPOSITION_DEFAULT) ? @"<em>(Default)</em>" : @"", (stream->disposition & AV_DISPOSITION_FORCED) ? @"[Forced]" : @""];
+
 			// Format, profile, bit depth, bitrate, sampling rate
 			AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
 			if (codec != NULL)
 			{
-				[strAudio appendFormat:@"<li><span class=\"st\">Format/Codec:</span> <span class=\"sc\">%s", codec->long_name];
+				[str_audio appendFormat:@"<li><span class=\"st\">Format/Codec:</span> <span class=\"sc\">%s", codec->long_name ? codec->long_name : codec->name];
 				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
 				if (profile != NULL)
-					[strAudio appendFormat:@" %s", profile];
+					[str_audio appendFormat:@" %s", profile];
+				// TODO: find bit depth
 				//if (bitdepth)
-				//	[strAudio appendFormat:@" / %@", bitdepth];
+				//	[strAudio appendFormat:@" / %d", bitdepth];
 				if (dec_ctx->bit_rate > 0)
-					[strAudio appendFormat:@" / %d Bps", dec_ctx->bit_rate];
+					[str_audio appendFormat:@" / %.2f Kbps", (float)((float)dec_ctx->bit_rate / 1000.0f)];
 				if (dec_ctx->sample_rate > 0)
-					[strAudio appendFormat:@" / %d Hz", dec_ctx->sample_rate];
-				[strAudio appendString:@"</span></li>"];
+					[str_audio appendFormat:@" / %.1f KHz", (float)((float)dec_ctx->sample_rate / 1000.0f)];
+				[str_audio appendString:@"</span></li>"];
 			}
 
 			// Channels
@@ -480,22 +495,25 @@
 					tmp = @"???";
 					break;
 			}
-			[strAudio appendFormat:@"<li><span class=\"st\">Channels:</span> <span class=\"sc\">%d <em>(%@)</em></span></li>", dec_ctx->channels, tmp];
+			[str_audio appendFormat:@"<li><span class=\"st\">Channels:</span> <span class=\"sc\">%d <em>(%@)</em></span></li>", dec_ctx->channels, tmp];
 
 			tag = av_dict_get(stream->metadata, "title", NULL, 0);
 			if (tag != NULL)
-				[strAudio appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%s</span></li>", tag->value];
+				[str_audio appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%s</span></li>", tag->value];
 
 			nb_audio_tracks++;
 		}
 	}
-	[strAudio appendString:@"</ul>"];
-	header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">Audio%@</h2><ul>", (nb_audio_tracks > 1) ? @"s" : @""];
-	[strAudio insertString:header atIndex:0];
-	outDict[@"audio"] = strAudio;
+	if (nb_audio_tracks > 0)
+	{
+		[str_audio appendString:@"</ul>"];
+		NSMutableString* header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">Audio%@</h2><ul>", (nb_audio_tracks > 1) ? @"s" : @""];
+		[str_audio insertString:header atIndex:0];
+		out_dict[@"audio"] = str_audio;
+	}
 
 	/* Subs stream(s) */
-	NSMutableString* strSubs = [[NSMutableString alloc] init];
+	NSMutableString* str_subs = [[NSMutableString alloc] init];
 	size_t nb_subs_tracks = 0;
 	for (int stream_idx = 0; stream_idx < (int)_fmt_ctx->nb_streams; stream_idx++)
 	{
@@ -505,19 +523,20 @@
 		{
 			// Separator if multiple streams
 			if (nb_subs_tracks > 0)
-				[strSubs appendString:@"<div class=\"sep\">----</div>"];
+				[str_subs appendString:@"<div class=\"sep\">----</div>"];
 
 			// Language
 			tag = av_dict_get(stream->metadata, "language", NULL, 0);
 			if (tag != NULL)
-				[strSubs appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%s %@</span></li>", tag->value, (stream->disposition & AV_DISPOSITION_DEFAULT) ? @"<em>(Default)</em>" : @""];
+				[str_subs appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%s", tag->value];
 			else
-				[strSubs appendString:@"<li><span class=\"st\">Language:</span> <span class=\"sc\"><em>Undefined</em></span></li>"];
+				[str_subs appendString:@"<li><span class=\"st\">Language:</span> <span class=\"sc\"><em>Undefined</em>"];
+			[str_subs appendFormat:@" %@ %@</span></li>", (stream->disposition & AV_DISPOSITION_DEFAULT) ? @"<em>(Default)</em>" : @"", (stream->disposition & AV_DISPOSITION_FORCED) ? @"[Forced]" : @""];
 			// Format
 			AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
 			if (codec != NULL)
 			{
-				const char* cname;
+				const char* cname = NULL;
 				switch (codec->id)
 				{
 					case AV_CODEC_ID_ASS:
@@ -536,22 +555,25 @@
 					default:
 						cname = codec->long_name ? codec->long_name : codec->name;
 				}
-				[strSubs appendFormat:@"<li><span class=\"st\">Format:</span> <span class=\"sc\">%s", cname];
+				[str_subs appendFormat:@"<li><span class=\"st\">Format:</span> <span class=\"sc\">%s", cname];
 			}
 			// Title
 			tag = av_dict_get(stream->metadata, "title", NULL, 0);
 			if (tag != NULL)
-				[strSubs appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%s</span></li>", tag->value];
+				[str_subs appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%s</span></li>", tag->value];
 		
 			nb_subs_tracks++;
 		}
 	}
-	[strSubs appendString:@"</ul>"];
-	header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">Subtitle%@</h2><ul>", (nb_subs_tracks > 1) ? @"s" : @""];
-	[strSubs insertString:header atIndex:0];
-	outDict[@"subs"] = strSubs;
+	if (nb_subs_tracks > 0)
+	{
+		[str_subs appendString:@"</ul>"];
+		NSMutableString* header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">Subtitle%@</h2><ul>", (nb_subs_tracks > 1) ? @"s" : @""];
+		[str_subs insertString:header atIndex:0];
+		out_dict[@"subs"] = str_subs;
+	}
 
-	return outDict;
+	return out_dict;
 }
 
 @end
