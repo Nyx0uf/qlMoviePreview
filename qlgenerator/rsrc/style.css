@@ -49,8 +49,9 @@ body
 #t .stitle
 {
 	margin:8px;
-	font-family:dink, Verdana;
+	font-family:Verdana;
 	font-size:24px;
+	font-weight:bolder;
 	color:#ECECEC;
 }
 
