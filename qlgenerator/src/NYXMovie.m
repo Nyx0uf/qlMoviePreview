@@ -358,12 +358,12 @@
 	[str_general appendFormat:@"<li><span class=\"st\">Size:</span> <span class=\"sc\">%@</span></li></ul>", fmt];
 	out_dict[@"general"] = str_general;
 
+	/* Look at each stream */
 	NSMutableString* str_video = [[NSMutableString alloc] init];
 	NSMutableString* str_audio = [[NSMutableString alloc] init];
 	NSMutableString* str_subs = [[NSMutableString alloc] init];
 	size_t nb_video_tracks = 0, nb_audio_tracks = 0, nb_subs_tracks = 0;
-	/* Look at each stream */
-	for (int stream_idx = 0; stream_idx < (int)_fmt_ctx->nb_streams; stream_idx++)
+	for (unsigned int stream_idx = 0; stream_idx < _fmt_ctx->nb_streams; stream_idx++)
 	{
 		AVStream* stream = _fmt_ctx->streams[stream_idx];
 		AVCodecContext* dec_ctx = stream->codec;
