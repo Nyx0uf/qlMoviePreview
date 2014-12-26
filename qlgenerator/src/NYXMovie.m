@@ -415,7 +415,7 @@
 			// Title
 			tag = av_dict_get(stream->metadata, "title", NULL, 0);
 			if (tag != NULL)
-				[str_video appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%s</span></li>", tag->value];
+				[str_video appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%@</span></li>", [NSString stringWithUTF8String:tag->value]];
 
 			nb_video_tracks++;
 		}
@@ -503,7 +503,7 @@
 
 			tag = av_dict_get(stream->metadata, "title", NULL, 0);
 			if (tag != NULL)
-				[str_audio appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%s</span></li>", tag->value];
+				[str_audio appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%@</span></li>", [NSString stringWithUTF8String:tag->value]];
 
 			nb_audio_tracks++;
 		}
@@ -564,7 +564,7 @@
 			// Title
 			tag = av_dict_get(stream->metadata, "title", NULL, 0);
 			if (tag != NULL)
-				[str_subs appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%s</span></li>", tag->value];
+				[str_subs appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%@</span></li>", [NSString stringWithUTF8String:tag->value]];
 		
 			nb_subs_tracks++;
 		}
