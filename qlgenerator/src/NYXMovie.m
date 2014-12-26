@@ -325,7 +325,7 @@
 {
 	/* General file info */
 	NSMutableDictionary* out_dict = [[NSMutableDictionary alloc] init];
-	NSMutableString* str_general = [[NSMutableString alloc] initWithString:@"<h2 class=\"stitle\">General</h2><ul>"];
+	NSMutableString* str_general = [[NSMutableString alloc] initWithString:@"<h2 class=\"stitle\">📌 General</h2><ul>"];
 
 	// Movie name
 	AVDictionaryEntry* tag = av_dict_get(_fmt_ctx->metadata, "title", NULL, 0);
@@ -423,7 +423,7 @@
 	if (nb_video_tracks > 0)
 	{
 		[str_video appendString:@"</ul>"];
-		NSMutableString* header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">Video%@</h2><ul>", (nb_video_tracks > 1) ? @"s" : @""];
+		NSMutableString* header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">🎬 Video%@</h2><ul>", (nb_video_tracks > 1) ? @"s" : @""];
 		[str_video insertString:header atIndex:0];
 		out_dict[@"video"] = str_video;
 	}
@@ -511,7 +511,7 @@
 	if (nb_audio_tracks > 0)
 	{
 		[str_audio appendString:@"</ul>"];
-		NSMutableString* header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">Audio%@</h2><ul>", (nb_audio_tracks > 1) ? @"s" : @""];
+		NSMutableString* header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">🔈 Audio%@</h2><ul>", (nb_audio_tracks > 1) ? @"s" : @""];
 		[str_audio insertString:header atIndex:0];
 		out_dict[@"audio"] = str_audio;
 	}
@@ -572,7 +572,7 @@
 	if (nb_subs_tracks > 0)
 	{
 		[str_subs appendString:@"</ul>"];
-		NSMutableString* header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">Subtitle%@</h2><ul>", (nb_subs_tracks > 1) ? @"s" : @""];
+		NSMutableString* header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">📃 Subtitle%@</h2><ul>", (nb_subs_tracks > 1) ? @"s" : @""];
 		[str_subs insertString:header atIndex:0];
 		out_dict[@"subs"] = str_subs;
 	}
