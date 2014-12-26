@@ -330,14 +330,18 @@
 	// Movie name
 	AVDictionaryEntry* tag = av_dict_get(_fmt_ctx->metadata, "title", NULL, 0);
 	if (tag != NULL)
-		[str_general appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%s</span></li>", tag->value];
+		[str_general appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%@</span></li>", [NSString stringWithUTF8String:tag->value]];
 	else
 		[str_general appendString:@"<li><span class=\"st\">Title:</span> <span class=\"sc\"><em>Undefined</em></span></li>"];
 
 	// Duration
 	time_t timestamp = (time_t)((double)_fmt_ctx->duration / AV_TIME_BASE);
 	struct tm* ptm = localtime(&timestamp);
-	[str_general appendFormat:@"<li><span class=\"st\">Duration:</span> <span class=\"sc\">%d:%d:%d</span></li>", ptm->tm_hour, ptm->tm_min, ptm->tm_sec];
+	const size_t hour = (size_t)((ptm->tm_hour > 0) ? (ptm->tm_hour - 1) : ptm->tm_hour); // For some reason tm_hour is never 0
+	if (0 == hour)
+		[str_general appendFormat:@"<li><span class=\"st\">Duration:</span> <span class=\"sc\">%dmn %ds</span></li>", ptm->tm_min, ptm->tm_sec];
+	else
+		[str_general appendFormat:@"<li><span class=\"st\">Duration:</span> <span class=\"sc\">%zuh %dmn %ds</span></li>", hour, ptm->tm_min, ptm->tm_sec];
 	
 	// Filesize
 	struct stat st;
