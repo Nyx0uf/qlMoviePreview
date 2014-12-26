@@ -26,4 +26,6 @@ typedef struct _nyx_size_struct
 
 -(void)fillDictionary:(NSMutableDictionary*)attrs;
 
+-(NSDictionary*)informations;
+
 @end

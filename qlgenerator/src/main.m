@@ -13,7 +13,6 @@
 #include <CoreServices/CoreServices.h>
 #include <QuickLook/QuickLook.h>
 #include <libavformat/avformat.h>
-#include <dlfcn.h>
 #import <Foundation/Foundation.h>
 
 
@@ -96,13 +95,8 @@ QuickLookGeneratorPluginType* AllocQuickLookGeneratorPluginType(CFUUIDRef inFact
 	// ffmpeg
 	av_register_all();
 
-	// Dynamically link to mediainfo once
+	// Get bundle reference
 	__selfBundle = [NSBundle bundleWithIdentifier:@"io.whine.qlmoviepreview"];
-	NSURL* burl = [__selfBundle executableURL];
-	NSURL* libURL = [[burl URLByDeletingLastPathComponent] URLByAppendingPathComponent:@"libmediainfo.0.dylib"];
-	void* _handle = dlopen([[libURL path] UTF8String], RTLD_LAZY);
-	if (NULL == _handle)
-		NSLog(@"[!] FAIL...");
 
 	// Create a directory to hold generated thumbnails
 	NSFileManager* file_manager = [[NSFileManager alloc] init];

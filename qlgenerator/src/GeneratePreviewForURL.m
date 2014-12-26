@@ -10,7 +10,6 @@
 
 #import <QuickLook/QuickLook.h>
 #import "NYXMovie.h"
-#import "MediainfoParser.h"
 #import "Tools.h"
 
 
@@ -61,8 +60,7 @@ OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview,
 			return kQLReturnNoError;
 
 		// Get the movie properties
-		MediainfoParser* parser = [[MediainfoParser alloc] initWithFilepath:filepath];
-		NSDictionary* mediainfo = [MediainfoParser format:[parser analyze]];
+		NSDictionary* mediainfo = [movie informations];
 
 		// Load CSS && thumbnail
 		NSURL* css_file = [__selfBundle URLForResource:@"style" withExtension:@"css"];
@@ -84,6 +82,7 @@ OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview,
 													 },
 											 },
 									 };
+
 		// Create HTML
 		NSString* general = mediainfo[@"general"];
 		NSString* video = mediainfo[@"video"];
