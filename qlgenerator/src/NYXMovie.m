@@ -342,7 +342,7 @@
 		[str_general appendFormat:@"<li><span class=\"st\">Duration:</span> <span class=\"sc\">%dmn %ds</span></li>", ptm->tm_min, ptm->tm_sec];
 	else
 		[str_general appendFormat:@"<li><span class=\"st\">Duration:</span> <span class=\"sc\">%zuh %dmn %ds</span></li>", hour, ptm->tm_min, ptm->tm_sec];
-	
+
 	// Filesize
 	struct stat st;
 	stat([_filepath UTF8String], &st);
@@ -355,25 +355,20 @@
 		fmt = [[NSString alloc] initWithFormat:@"%.2fKb", (float)((float)st.st_size / 1024.0f)];
 	else // Less than 1Kb
 		fmt = [[NSString alloc] initWithFormat:@"%lldb", st.st_size];
-	[str_general appendFormat:@"<li><span class=\"st\">Size:</span> <span class=\"sc\">%@</span></li>", fmt];
-	[str_general appendString:@"</ul>"];
+	[str_general appendFormat:@"<li><span class=\"st\">Size:</span> <span class=\"sc\">%@</span></li></ul>", fmt];
 	out_dict[@"general"] = str_general;
 
-	/* Video stream(s) */
 	NSMutableString* str_video = [[NSMutableString alloc] init];
-	size_t nb_video_tracks = 0;
+	NSMutableString* str_audio = [[NSMutableString alloc] init];
+	NSMutableString* str_subs = [[NSMutableString alloc] init];
+	size_t nb_video_tracks = 0, nb_audio_tracks = 0, nb_subs_tracks = 0;
+	/* Look at each stream */
 	for (int stream_idx = 0; stream_idx < (int)_fmt_ctx->nb_streams; stream_idx++)
 	{
 		AVStream* stream = _fmt_ctx->streams[stream_idx];
 		AVCodecContext* dec_ctx = stream->codec;
-		if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
+		if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO) /* Video stream(s) */
 		{
-			/*AVDictionaryEntry* t = NULL;
-			while ((t = av_dict_get(stream->metadata, "", t, AV_DICT_IGNORE_SUFFIX)))
-			{
-				NSLog(@"%s -> %s", t->key, t->value);
-			}*/
-	
 			// Separator if multiple streams
 			if (nb_video_tracks > 0)
 				[str_video appendString:@"<div class=\"sep\">----</div>"];
@@ -419,30 +414,8 @@
 
 			nb_video_tracks++;
 		}
-	}
-	if (nb_video_tracks > 0)
-	{
-		[str_video appendString:@"</ul>"];
-		NSMutableString* header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">🎬 Video%@</h2><ul>", (nb_video_tracks > 1) ? @"s" : @""];
-		[str_video insertString:header atIndex:0];
-		out_dict[@"video"] = str_video;
-	}
-
-	/* Audio stream(s) */
-	NSMutableString* str_audio = [[NSMutableString alloc] init];
-	size_t nb_audio_tracks = 0;
-	for (int stream_idx = 0; stream_idx < (int)_fmt_ctx->nb_streams; stream_idx++)
-	{
-		AVStream* stream = _fmt_ctx->streams[stream_idx];
-		AVCodecContext* dec_ctx = stream->codec;
-		if (dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO)
+		else if (dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO) /* Audio stream(s) */
 		{
-			/*AVDictionaryEntry* t = NULL;
-			while ((t = av_dict_get(stream->metadata, "", t, AV_DICT_IGNORE_SUFFIX)))
-			{
-				NSLog(@"%s -> %s", t->key, t->value);
-			}*/
-
 			// Separator if multiple streams
 			if (nb_audio_tracks > 0)
 				[str_audio appendString:@"<div class=\"sep\">----</div>"];
@@ -507,23 +480,7 @@
 
 			nb_audio_tracks++;
 		}
-	}
-	if (nb_audio_tracks > 0)
-	{
-		[str_audio appendString:@"</ul>"];
-		NSMutableString* header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">🔈 Audio%@</h2><ul>", (nb_audio_tracks > 1) ? @"s" : @""];
-		[str_audio insertString:header atIndex:0];
-		out_dict[@"audio"] = str_audio;
-	}
-
-	/* Subs stream(s) */
-	NSMutableString* str_subs = [[NSMutableString alloc] init];
-	size_t nb_subs_tracks = 0;
-	for (int stream_idx = 0; stream_idx < (int)_fmt_ctx->nb_streams; stream_idx++)
-	{
-		AVStream* stream = _fmt_ctx->streams[stream_idx];
-		AVCodecContext* dec_ctx = stream->codec;
-		if (dec_ctx->codec_type == AVMEDIA_TYPE_SUBTITLE)
+		else if (dec_ctx->codec_type == AVMEDIA_TYPE_SUBTITLE) /* Subs stream(s) */
 		{
 			// Separator if multiple streams
 			if (nb_subs_tracks > 0)
@@ -565,9 +522,23 @@
 			tag = av_dict_get(stream->metadata, "title", NULL, 0);
 			if (tag != NULL)
 				[str_subs appendFormat:@"<li><span class=\"st\">Title:</span> <span class=\"sc\">%@</span></li>", [NSString stringWithUTF8String:tag->value]];
-		
+
 			nb_subs_tracks++;
 		}
+	}
+	if (nb_video_tracks > 0)
+	{
+		[str_video appendString:@"</ul>"];
+		NSMutableString* header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">🎬 Video%@</h2><ul>", (nb_video_tracks > 1) ? @"s" : @""];
+		[str_video insertString:header atIndex:0];
+		out_dict[@"video"] = str_video;
+	}
+	if (nb_audio_tracks > 0)
+	{
+		[str_audio appendString:@"</ul>"];
+		NSMutableString* header = [[NSMutableString alloc] initWithFormat:@"<h2 class=\"stitle\">🔈 Audio%@</h2><ul>", (nb_audio_tracks > 1) ? @"s" : @""];
+		[str_audio insertString:header atIndex:0];
+		out_dict[@"audio"] = str_audio;
 	}
 	if (nb_subs_tracks > 0)
 	{
