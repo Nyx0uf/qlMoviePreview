@@ -368,6 +368,7 @@
 		AVStream* stream = _fmt_ctx->streams[stream_idx];
 		AVCodecContext* dec_ctx = stream->codec;
 		const BOOL def = (stream->disposition & AV_DISPOSITION_DEFAULT);
+		const BOOL forced = (stream->disposition & AV_DISPOSITION_FORCED);
 		if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO) /* Video stream(s) */
 		{
 			// Separator if multiple streams
@@ -428,7 +429,7 @@
 				[str_audio appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@%s", def ? @"<b>" : @"", tag->value];
 			else
 				[str_audio appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@<em>Undefined</em>", def ? @"<b>" : @""];
-			[str_audio appendFormat:@" %@%@</span></li>", (stream->disposition & AV_DISPOSITION_FORCED) ? @"[Forced]" : @"", def ? @"</b>" : @""];
+			[str_audio appendFormat:@" %@%@</span></li>", forced ? @"[Forced]" : @"", def ? @"</b>" : @""];
 
 			// Format, profile, bit depth, bitrate, sampling rate
 			AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
@@ -494,7 +495,7 @@
 				[str_subs appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@%s", def ? @"<b>" : @"", tag->value];
 			else
 				[str_subs appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@<em>Undefined</em>", def ? @"<b>" : @""];
-			[str_subs appendFormat:@" %@%@</span></li>", (stream->disposition & AV_DISPOSITION_FORCED) ? @"[Forced]" : @"", def ? @"</b>" : @""];
+			[str_subs appendFormat:@" %@%@</span></li>", forced ? @"[Forced]" : @"", def ? @"</b>" : @""];
 			// Format
 			AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
 			if (codec != NULL)
