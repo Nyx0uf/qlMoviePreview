@@ -396,7 +396,7 @@
 				if (profile != NULL)
 					[str_video appendFormat:@" / %s", profile];
 				if (dec_ctx->bit_rate > 0)
-					[str_video appendFormat:@" / %.2f Kbps", (float)((float)dec_ctx->bit_rate / 1000.0f)];
+					[str_video appendFormat:@" / %d Kbps", (int)((float)dec_ctx->bit_rate / 1000.0f)];
 				if (dec_ctx->refs > 0)
 					[str_video appendFormat:@" / %d ReF", dec_ctx->refs];
 				[str_video appendString:@"</span></li>"];
@@ -467,7 +467,7 @@
 				//if (bitdepth)
 				//	[strAudio appendFormat:@" / %d", bitdepth];
 				if (dec_ctx->bit_rate > 0)
-					[str_audio appendFormat:@" / %.2f Kbps", (float)((float)dec_ctx->bit_rate / 1000.0f)];
+					[str_audio appendFormat:@" / %d Kbps", (int)((float)dec_ctx->bit_rate / 1000.0f)];
 				if (dec_ctx->sample_rate > 0)
 					[str_audio appendFormat:@" / %.1f KHz", (float)((float)dec_ctx->sample_rate / 1000.0f)];
 				[str_audio appendString:@"</span></li>"];
