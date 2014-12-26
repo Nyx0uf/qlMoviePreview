@@ -367,6 +367,7 @@
 	{
 		AVStream* stream = _fmt_ctx->streams[stream_idx];
 		AVCodecContext* dec_ctx = stream->codec;
+		const BOOL def = (stream->disposition & AV_DISPOSITION_DEFAULT);
 		if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO) /* Video stream(s) */
 		{
 			// Separator if multiple streams
@@ -379,6 +380,7 @@
 			AVRational sar = av_guess_sample_aspect_ratio(_fmt_ctx, stream, NULL);
 			if ((sar.num) && (sar.den))
 				width = (int)av_rescale(dec_ctx->width, sar.num, sar.den);
+			// TODO: find DAR, because this doesn't work
 			AVRational dar = stream->display_aspect_ratio;
 			[str_video appendFormat:@"<li><span class=\"st\">Resolution:</span> <span class=\"sc\">%dx%d <em>(%d:%d)</em></span></li>", width, height, dar.num, dar.den];
 
@@ -404,7 +406,7 @@
 			else
 				[str_video appendString:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\"><em>Undefined</em></span></li>"];
 
-			// TODO: find bit depth
+			// TODO: find video bit depth
 			//[strVideo appendFormat:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">%d</span></li>"];
 
 			// Title
@@ -423,10 +425,10 @@
 			// Language
 			tag = av_dict_get(stream->metadata, "language", NULL, 0);
 			if (tag != NULL)
-				[str_audio appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%s", tag->value];
+				[str_audio appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@%s", def ? @"<b>" : @"", tag->value];
 			else
-				[str_audio appendString:@"<li><span class=\"st\">Language:</span> <span class=\"sc\"><em>Undefined</em>"];
-			[str_audio appendFormat:@" %@ %@</span></li>", (stream->disposition & AV_DISPOSITION_DEFAULT) ? @"<em>(Default)</em>" : @"", (stream->disposition & AV_DISPOSITION_FORCED) ? @"[Forced]" : @""];
+				[str_audio appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@<em>Undefined</em>", def ? @"<b>" : @""];
+			[str_audio appendFormat:@" %@%@</span></li>", (stream->disposition & AV_DISPOSITION_FORCED) ? @"[Forced]" : @"", def ? @"</b>" : @""];
 
 			// Format, profile, bit depth, bitrate, sampling rate
 			AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
@@ -436,7 +438,7 @@
 				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
 				if (profile != NULL)
 					[str_audio appendFormat:@" %s", profile];
-				// TODO: find bit depth
+				// TODO: find audio bit depth
 				//if (bitdepth)
 				//	[strAudio appendFormat:@" / %d", bitdepth];
 				if (dec_ctx->bit_rate > 0)
@@ -489,10 +491,10 @@
 			// Language
 			tag = av_dict_get(stream->metadata, "language", NULL, 0);
 			if (tag != NULL)
-				[str_subs appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%s", tag->value];
+				[str_subs appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@%s", def ? @"<b>" : @"", tag->value];
 			else
-				[str_subs appendString:@"<li><span class=\"st\">Language:</span> <span class=\"sc\"><em>Undefined</em>"];
-			[str_subs appendFormat:@" %@ %@</span></li>", (stream->disposition & AV_DISPOSITION_DEFAULT) ? @"<em>(Default)</em>" : @"", (stream->disposition & AV_DISPOSITION_FORCED) ? @"[Forced]" : @""];
+				[str_subs appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@<em>Undefined</em>", def ? @"<b>" : @""];
+			[str_subs appendFormat:@" %@%@</span></li>", (stream->disposition & AV_DISPOSITION_FORCED) ? @"[Forced]" : @"", def ? @"</b>" : @""];
 			// Format
 			AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
 			if (codec != NULL)
