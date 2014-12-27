@@ -409,7 +409,8 @@
 				}
 			}
 
-			// Framerate (mode)
+			// Framerate
+			// TODO: fix framerate, sometimes it is bugged
 			AVRational fps = dec_ctx->framerate;
 			if ((fps.num) && (fps.den))
 				[str_video appendFormat:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\">%.3f</span></li>", (float)((float)fps.num / (float)fps.den)];
@@ -441,17 +442,47 @@
 			AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
 			if (codec != NULL)
 			{
-				[str_audio appendFormat:@"<li><span class=\"st\">Format/Codec:</span> <span class=\"sc\">%s", codec->long_name ? codec->long_name : codec->name];
+				const char* cname = NULL;
+				switch (codec->id)
+				{
+					case AV_CODEC_ID_FLAC:
+						cname = "FLAC";
+						break;
+					case AV_CODEC_ID_MP3:
+						cname = "MP3";
+						break;
+					case AV_CODEC_ID_AAC:
+						cname = "AAC";
+						break;
+					case AV_CODEC_ID_VORBIS:
+						cname = "Vorbis";
+						break;
+					case AV_CODEC_ID_AC3:
+						cname = "AC3";
+						break;
+					case AV_CODEC_ID_TRUEHD:
+						cname = "TrueHD";
+						break;
+					case AV_CODEC_ID_DTS:
+						cname = "DTS";
+						break;
+					case AV_CODEC_ID_OPUS:
+						cname = "Opus";
+						break;
+					default:
+						cname = codec->long_name ? codec->long_name : codec->name;
+				}
+				[str_audio appendFormat:@"<li><span class=\"st\">Format/Codec:</span> <span class=\"sc\">%s", cname];
 				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
 				if (profile != NULL)
-					[str_audio appendFormat:@" %s", profile];
+					[str_audio appendFormat:@" (%s)", profile];
 				// TODO: find audio bit depth
 				//if (dec_ctx->bits_per_raw_sample)
 				//[str_audio appendFormat:@" / %d", dec_ctx->bits_per_coded_sample];
-				if (dec_ctx->bit_rate > 0)
-					[str_audio appendFormat:@" / %d Kbps", (int)((float)dec_ctx->bit_rate / 1000.0f)];
 				if (dec_ctx->sample_rate > 0)
 					[str_audio appendFormat:@" / %.1f KHz", (float)((float)dec_ctx->sample_rate / 1000.0f)];
+				if (dec_ctx->bit_rate > 0)
+					[str_audio appendFormat:@" / %d Kbps", (int)((float)dec_ctx->bit_rate / 1000.0f)];
 				[str_audio appendString:@"</span></li>"];
 			}
 
