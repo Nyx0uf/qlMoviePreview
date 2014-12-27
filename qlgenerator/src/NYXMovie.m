@@ -460,28 +460,28 @@
 			switch (dec_ctx->channels)
 			{
 				case 1:
-					tmp = @"1.0 [Mono]";
+					tmp = @"Mono 1.0";
 					break;
 				case 2:
-					tmp = @"2.0 [Stereo]";
+					tmp = @"Stereo 2.0";
 					break;
 				case 3:
-					tmp = @"2.1 [Surround]";
+					tmp = @"Surround 2.1";
 					break;
 				case 6:
-					tmp = @"5.1 [Surround]";
+					tmp = @"Surround 5.1";
 					break;
 				case 7:
-					tmp = @"6.1 [Surround]";
+					tmp = @"Surround 6.1";
 					break;
 				case 8:
-					tmp = @"7.1 [Surround]";
+					tmp = @"Surround 7.1";
 					break;
 				default:
-					tmp = @"???";
+					tmp = [NSString stringWithFormat:@"%d", dec_ctx->channels];
 					break;
 			}
-			[str_audio appendFormat:@"<li><span class=\"st\">Channels:</span> <span class=\"sc\">%d <em>(%@)</em></span></li>", dec_ctx->channels, tmp];
+			[str_audio appendFormat:@"<li><span class=\"st\">Channels:</span> <span class=\"sc\">%d — <em>%@</em></span></li>", dec_ctx->channels, tmp];
 
 			tag = av_dict_get(stream->metadata, "title", NULL, 0);
 			if (tag != NULL)
