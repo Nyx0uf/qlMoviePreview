@@ -392,7 +392,7 @@
 				[str_video appendFormat:@"<li><span class=\"st\">Format/Codec:</span> <span class=\"sc\">%s", codec->long_name ? codec->long_name : codec->name];
 				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
 				if (profile != NULL)
-					[str_video appendFormat:@" / %s", profile];
+					[str_video appendFormat:@" (%s)", profile];
 				if (dec_ctx->bit_rate > 0)
 					[str_video appendFormat:@" / %d Kbps", (int)((float)dec_ctx->bit_rate / 1000.0f)];
 				if (dec_ctx->refs > 0)
