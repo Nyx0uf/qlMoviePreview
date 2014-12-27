@@ -398,6 +398,15 @@
 				if (dec_ctx->refs > 0)
 					[str_video appendFormat:@" / %d ReF", dec_ctx->refs];
 				[str_video appendString:@"</span></li>"];
+
+				if (profile != NULL)
+				{
+					// TODO: More reliable way to find bit depth
+					if ((strstr(profile, "High 10") != NULL) || (strstr(profile, "High 4:4:4") != NULL))
+						[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">10 bits</span></li>"];
+					else // Assume 8 bits
+						[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">8 bits</span></li>"];
+				}
 			}
 
 			// Framerate (mode)
@@ -406,9 +415,6 @@
 				[str_video appendFormat:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\">%.3f</span></li>", (float)((float)fps.num / (float)fps.den)];
 			else
 				[str_video appendString:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\"><em>Undefined</em></span></li>"];
-
-			// TODO: find video bit depth
-			//[strVideo appendFormat:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">%d</span></li>"];
 
 			// Title
 			tag = av_dict_get(stream->metadata, "title", NULL, 0);
@@ -440,8 +446,8 @@
 				if (profile != NULL)
 					[str_audio appendFormat:@" %s", profile];
 				// TODO: find audio bit depth
-				//if (bitdepth)
-				//	[strAudio appendFormat:@" / %d", bitdepth];
+				//if (dec_ctx->bits_per_raw_sample)
+				//[str_audio appendFormat:@" / %d", dec_ctx->bits_per_coded_sample];
 				if (dec_ctx->bit_rate > 0)
 					[str_audio appendFormat:@" / %d Kbps", (int)((float)dec_ctx->bit_rate / 1000.0f)];
 				if (dec_ctx->sample_rate > 0)
