@@ -410,10 +410,10 @@
 			}
 
 			// Framerate
-			// TODO: fix framerate, sometimes it is bugged
-			AVRational fps = dec_ctx->framerate;
-			if ((fps.num) && (fps.den))
-				[str_video appendFormat:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\">%.3f</span></li>", (float)((float)fps.num / (float)fps.den)];
+			if ((stream->avg_frame_rate.den) && (stream->avg_frame_rate.num))
+				[str_video appendFormat:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\">%.3f</span></li>", (stream->avg_frame_rate.num * 100) / (double)stream->avg_frame_rate.den / 100.0];
+			else if ((stream->r_frame_rate.den) && (stream->r_frame_rate.num))
+				[str_video appendFormat:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\">%.3f</span></li>", (stream->r_frame_rate.num * 100) / (double)stream->r_frame_rate.den / 100.0];
 			else
 				[str_video appendString:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\"><em>Undefined</em></span></li>"];
 
