@@ -541,26 +541,26 @@
 				switch (codec->id)
 				{
 					case AV_CODEC_ID_ASS:
-						cname = "Advanced SubStation Alpha (ASS)";
+						cname = "Advanced SubStation Alpha (.ass)";
 						break;
 					case AV_CODEC_ID_SSA:
-						cname = "SubStation Alpha (SSA)";
+						cname = "SubStation Alpha (.ssa)";
 						break;
 					case AV_CODEC_ID_HDMV_PGS_SUBTITLE:
-						cname = "Presentation Graphic Stream (PGS)";
+						cname = "Presentation Graphic Stream (.pgs)";
 						break;
 					case AV_CODEC_ID_SRT:
 					case AV_CODEC_ID_SUBRIP:
-						cname = "SubRip (SRT)";
+						cname = "SubRip (.srt)";
 						break;
 					case AV_CODEC_ID_DVD_SUBTITLE:
-						cname = "VobSub (SUB/IDX)";
+						cname = "VobSub (.sub/.idx)";
 						break;
 					case AV_CODEC_ID_MICRODVD:
-						cname = "MicroDVD (SUB)";
+						cname = "MicroDVD (.sub)";
 						break;
 					case AV_CODEC_ID_SAMI:
-						cname = "SAMI (SMI)";
+						cname = "SAMI (.smi)";
 						break;
 					default:
 						cname = codec->long_name ? codec->long_name : codec->name;
