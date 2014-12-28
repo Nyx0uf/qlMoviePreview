@@ -335,6 +335,7 @@
 		[str_general appendString:@"<li><span class=\"st\">Title:</span> <span class=\"sc\"><em>Undefined</em></span></li>"];
 
 	// Duration
+	// TODO: Don't display min/sec when they are 0
 	time_t timestamp = (time_t)((double)_fmt_ctx->duration / AV_TIME_BASE);
 	struct tm* ptm = localtime(&timestamp);
 	const size_t hour = (size_t)((ptm->tm_hour > 0) ? (ptm->tm_hour - 1) : ptm->tm_hour); // For some reason tm_hour is never 0
@@ -375,15 +376,17 @@
 			if (nb_video_tracks > 0)
 				[str_video appendString:@"<div class=\"sep\">----</div>"];
 
-			// WIDTHxHEIGHT (aspect ratio)
+			// WIDTHxHEIGHT (DAR)
 			const int height = dec_ctx->height;
 			int width = dec_ctx->width;
 			AVRational sar = av_guess_sample_aspect_ratio(_fmt_ctx, stream, NULL);
 			if ((sar.num) && (sar.den))
 				width = (int)av_rescale(dec_ctx->width, sar.num, sar.den);
-			// TODO: find DAR, because this doesn't work
-			AVRational dar = stream->display_aspect_ratio;
-			[str_video appendFormat:@"<li><span class=\"st\">Resolution:</span> <span class=\"sc\">%dx%d <em>(%d:%d)</em></span></li>", width, height, dar.num, dar.den];
+			[str_video appendFormat:@"<li><span class=\"st\">Resolution:</span> <span class=\"sc\">%dx%d", width, height];
+			const AVRational dar = stream->display_aspect_ratio;
+			if ((dar.num) && (dar.den))
+				[str_video appendFormat:@" <em>(%d:%d)</em></span></li>", dar.num, dar.den];
+			[str_video appendString:@"</span></li>"];
 
 			// Format, profile, bitrate, reframe
 			AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
@@ -541,26 +544,26 @@
 				switch (codec->id)
 				{
 					case AV_CODEC_ID_ASS:
-						cname = "Advanced SubStation Alpha (ASS)";
+						cname = "ASS";
 						break;
 					case AV_CODEC_ID_SSA:
-						cname = "SubStation Alpha (SSA)";
+						cname = "SSA";
 						break;
 					case AV_CODEC_ID_HDMV_PGS_SUBTITLE:
-						cname = "Presentation Graphic Stream (PGS)";
+						cname = "PGS";
 						break;
 					case AV_CODEC_ID_SRT:
 					case AV_CODEC_ID_SUBRIP:
-						cname = "SubRip (SRT)";
+						cname = "SRT";
 						break;
 					case AV_CODEC_ID_DVD_SUBTITLE:
-						cname = "VobSub (SUB/IDX)";
+						cname = "VobSub";
 						break;
 					case AV_CODEC_ID_MICRODVD:
-						cname = "MicroDVD (SUB)";
+						cname = "SUB";
 						break;
 					case AV_CODEC_ID_SAMI:
-						cname = "SAMI (SMI)";
+						cname = "SMI";
 						break;
 					default:
 						cname = codec->long_name ? codec->long_name : codec->name;
