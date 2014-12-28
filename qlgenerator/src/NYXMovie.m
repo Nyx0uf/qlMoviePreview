@@ -392,7 +392,7 @@
 			AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
 			if (codec != NULL)
 			{
-				[str_video appendFormat:@"<li><span class=\"st\">Format/Codec:</span> <span class=\"sc\">%s", codec->long_name ? codec->long_name : codec->name];
+				[str_video appendFormat:@"<li><span class=\"st\">Format:</span> <span class=\"sc\">%s", codec->long_name ? codec->long_name : codec->name];
 				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
 				if (profile != NULL)
 					[str_video appendFormat:@" (%s)", profile];
@@ -475,7 +475,7 @@
 					default:
 						cname = codec->long_name ? codec->long_name : codec->name;
 				}
-				[str_audio appendFormat:@"<li><span class=\"st\">Format/Codec:</span> <span class=\"sc\">%s", cname];
+				[str_audio appendFormat:@"<li><span class=\"st\">Format:</span> <span class=\"sc\">%s", cname];
 				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
 				if (profile != NULL)
 					[str_audio appendFormat:@" (%s)", profile];
