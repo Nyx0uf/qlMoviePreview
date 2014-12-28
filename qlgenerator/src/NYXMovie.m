@@ -553,6 +553,15 @@
 					case AV_CODEC_ID_SUBRIP:
 						cname = "SubRip (SRT)";
 						break;
+					case AV_CODEC_ID_DVD_SUBTITLE:
+						cname = "VobSub (SUB/IDX)";
+						break;
+					case AV_CODEC_ID_MICRODVD:
+						cname = "MicroDVD (SUB)";
+						break;
+					case AV_CODEC_ID_SAMI:
+						cname = "SAMI (SMI)";
+						break;
 					default:
 						cname = codec->long_name ? codec->long_name : codec->name;
 				}
