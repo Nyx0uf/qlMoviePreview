@@ -194,12 +194,28 @@
 	{
 		AVStream* stream = _fmt_ctx->streams[stream_idx];
 		AVCodecContext* dec_ctx = stream->codec;
+		//const BOOL def = (stream->disposition & AV_DISPOSITION_DEFAULT);
+		const BOOL forced = (stream->disposition & AV_DISPOSITION_FORCED);
 
-		if (dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO)
+		if (AVMEDIA_TYPE_VIDEO == dec_ctx->codec_type)
 		{
-			if (dec_ctx->bit_rate > 0 && !attrs[(__bridge NSString*)kMDItemAudioBitRate])
+			if ((dec_ctx->bit_rate > 0) && (nil == attrs[(__bridge NSString*)kMDItemVideoBitRate]))
+				attrs[(__bridge NSString*)kMDItemVideoBitRate] = @(dec_ctx->bit_rate);
+			if ((dec_ctx->height > 0) && (nil == attrs[(__bridge NSString*)kMDItemPixelHeight]))
+			{
+				attrs[(__bridge NSString*)kMDItemPixelHeight] = @(dec_ctx->height);
+				AVRational sar = av_guess_sample_aspect_ratio(_fmt_ctx, stream, NULL);
+				if ((sar.num) && (sar.den))
+					attrs[(__bridge NSString*)kMDItemPixelWidth] = @(av_rescale(dec_ctx->width, sar.num, sar.den));
+				else
+					attrs[(__bridge NSString*)kMDItemPixelWidth] = @(dec_ctx->width);
+			}
+		}
+		else if (AVMEDIA_TYPE_AUDIO == dec_ctx->codec_type)
+		{
+			if ((dec_ctx->bit_rate > 0) && (nil == attrs[(__bridge NSString*)kMDItemAudioBitRate]))
 				attrs[(__bridge NSString*)kMDItemAudioBitRate] = @(dec_ctx->bit_rate);
-			if (dec_ctx->channels > 0 && !attrs[(__bridge NSString*)kMDItemAudioChannelCount])
+			if ((dec_ctx->channels > 0) && (nil == attrs[(__bridge NSString*)kMDItemAudioChannelCount]))
 			{
 				NSNumber* channels;
 				switch (dec_ctx->channels)
@@ -217,30 +233,16 @@
 						channels = @7.1f;
 						break;
 					default:
-						channels = [NSNumber numberWithInt:dec_ctx->channels];
+						channels = @(dec_ctx->channels);
 				}
 				attrs[(__bridge NSString*)kMDItemAudioChannelCount] = channels;
 			}
-			if (dec_ctx->sample_rate > 0 && !attrs[(__bridge NSString*)kMDItemAudioSampleRate])
+			if ((dec_ctx->sample_rate > 0) && (nil == attrs[(__bridge NSString*)kMDItemAudioSampleRate]))
 				attrs[(__bridge NSString*)kMDItemAudioSampleRate] = @(dec_ctx->sample_rate);
 		}
-		else if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
+		else if (AVMEDIA_TYPE_SUBTITLE == dec_ctx->codec_type)
 		{
-			if (dec_ctx->bit_rate > 0 && !attrs[(__bridge NSString*)kMDItemVideoBitRate])
-				attrs[(__bridge NSString*)kMDItemVideoBitRate] = @(dec_ctx->bit_rate);
-			if (dec_ctx->height > 0 && !attrs[(__bridge NSString*)kMDItemPixelHeight])
-			{
-				attrs[(__bridge NSString*)kMDItemPixelHeight] = @(dec_ctx->height);
-				AVRational sar = av_guess_sample_aspect_ratio(_fmt_ctx, stream, NULL);
-				if (sar.num && sar.den)
-					attrs[(__bridge NSString*)kMDItemPixelWidth] = @(av_rescale(dec_ctx->width, sar.num, sar.den));
-				else
-					attrs[(__bridge NSString*)kMDItemPixelWidth] = @(dec_ctx->width);
-			}
-		}
-		else if (dec_ctx->codec_type == AVMEDIA_TYPE_SUBTITLE)
-		{
-			if (stream->disposition & AV_DISPOSITION_FORCED)
+			if (forced)
 				continue;
 		}
 		else
@@ -370,7 +372,7 @@
 		AVCodecContext* dec_ctx = stream->codec;
 		const BOOL def = (stream->disposition & AV_DISPOSITION_DEFAULT);
 		const BOOL forced = (stream->disposition & AV_DISPOSITION_FORCED);
-		if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO) /* Video stream(s) */
+		if (AVMEDIA_TYPE_VIDEO == dec_ctx->codec_type) /* Video stream(s) */
 		{
 			// Separator if multiple streams
 			if (nb_video_tracks > 0)
@@ -427,7 +429,7 @@
 
 			nb_video_tracks++;
 		}
-		else if (dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO) /* Audio stream(s) */
+		else if (AVMEDIA_TYPE_AUDIO == dec_ctx->codec_type) /* Audio stream(s) */
 		{
 			// Separator if multiple streams
 			if (nb_audio_tracks > 0)
@@ -523,7 +525,7 @@
 
 			nb_audio_tracks++;
 		}
-		else if (dec_ctx->codec_type == AVMEDIA_TYPE_SUBTITLE) /* Subs stream(s) */
+		else if (AVMEDIA_TYPE_SUBTITLE == dec_ctx->codec_type) /* Subs stream(s) */
 		{
 			// Separator if multiple streams
 			if (nb_subs_tracks > 0)
