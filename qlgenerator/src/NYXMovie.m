@@ -394,10 +394,28 @@
 			AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
 			if (codec != NULL)
 			{
-				[str_video appendFormat:@"<li><span class=\"st\">Format:</span> <span class=\"sc\">%s", codec->long_name ? codec->long_name : codec->name];
+				const char* cname;
+				switch (codec->id)
+				{
+					case AV_CODEC_ID_H263:
+						cname = "H.263";
+						break;
+					case AV_CODEC_ID_H263P:
+						cname = "H.263+";
+						break;
+					case AV_CODEC_ID_H264:
+						cname = "H.264";
+						break;
+					case AV_CODEC_ID_HEVC:
+						cname = "H.265";
+						break;
+					default:
+						cname = codec->long_name ? codec->long_name : codec->name;
+				}
+				[str_video appendFormat:@"<li><span class=\"st\">Format:</span> <span class=\"sc\">%s", cname];
 				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
 				if (profile != NULL)
-					[str_video appendFormat:@" (%s)", profile];
+					[str_video appendFormat:@" [%s]", profile];
 				if (dec_ctx->bit_rate > 0)
 					[str_video appendFormat:@" / %d Kbps", (int)((float)dec_ctx->bit_rate / 1000.0f)];
 				if (dec_ctx->refs > 0)
@@ -480,7 +498,7 @@
 				[str_audio appendFormat:@"<li><span class=\"st\">Format:</span> <span class=\"sc\">%s", cname];
 				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
 				if (profile != NULL)
-					[str_audio appendFormat:@" (%s)", profile];
+					[str_audio appendFormat:@" [%s]", profile];
 				// TODO: find audio bit depth
 				//if (dec_ctx->bits_per_raw_sample)
 				//[str_audio appendFormat:@" / %d", dec_ctx->bits_per_coded_sample];
