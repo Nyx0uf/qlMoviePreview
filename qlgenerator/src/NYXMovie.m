@@ -189,9 +189,11 @@
 	// Title
 	AVDictionaryEntry* tag = av_dict_get(_fmt_ctx->metadata, "title", NULL, 0);
 	if (tag != NULL)
-		attrs[(__bridge NSString*)kMDItemTitle] = @(tag->value);
+		attrs[(__bridge NSString*)kMDItemTitle] = [NSString stringWithUTF8String:tag->value];
 
 	NSMutableArray* codecs = [[NSMutableArray alloc] init];
+	NSMutableArray* langs = [[NSMutableArray alloc] init];
+	NSMutableArray* types = [[NSMutableArray alloc] init];
 	for (unsigned int stream_idx = 0; stream_idx < _fmt_ctx->nb_streams; stream_idx++)
 	{
 		AVStream* stream = _fmt_ctx->streams[stream_idx];
@@ -211,6 +213,7 @@
 				else
 					attrs[(__bridge NSString*)kMDItemPixelWidth] = @(dec_ctx->width);
 			}
+			[types addObject:@"Video"];
 		}
 		else if (AVMEDIA_TYPE_AUDIO == dec_ctx->codec_type)
 		{
@@ -240,11 +243,20 @@
 			}
 			if ((dec_ctx->sample_rate > 0) && (nil == attrs[(__bridge NSString*)kMDItemAudioSampleRate]))
 				attrs[(__bridge NSString*)kMDItemAudioSampleRate] = @(dec_ctx->sample_rate);
+
+			// Lang
+			tag = av_dict_get(stream->metadata, "language", NULL, 0);
+			if (tag != NULL)
+				[langs addObject:@(tag->value)];
+
+			[types addObject:@"Audio"];
 		}
 		else if (AVMEDIA_TYPE_SUBTITLE == dec_ctx->codec_type)
 		{
 			if (forced)
 				continue;
+
+			[types addObject:@"Text"];
 		}
 		else
 			continue;
@@ -330,8 +342,14 @@
 		}
 	}
 
+	if ([types count])
+		attrs[(__bridge NSString*)kMDItemMediaTypes] = types;
+
 	if ([codecs count])
 		attrs[(__bridge NSString*)kMDItemCodecs] = codecs;
+
+	if ([langs count])
+		attrs[(__bridge NSString*)kMDItemLanguages] = langs;
 }
 
 -(NSDictionary*)informations
