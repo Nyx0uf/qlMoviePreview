@@ -181,20 +181,21 @@
 -(void)fillDictionary:(NSMutableDictionary*)attrs
 {
 	// Duration
-	attrs[(__bridge NSString*)kMDItemDurationSeconds] = @((double)((double)_fmt_ctx->duration / AV_TIME_BASE));
+	if (_fmt_ctx->duration > 0)
+		attrs[(__bridge NSString*)kMDItemDurationSeconds] = @((double)((double)_fmt_ctx->duration / AV_TIME_BASE));
 	// Bit rate
-	attrs[(__bridge NSString*)kMDItemTotalBitRate] = @(_fmt_ctx->bit_rate);
+	if (_fmt_ctx->bit_rate > 0)
+		attrs[(__bridge NSString*)kMDItemTotalBitRate] = @(_fmt_ctx->bit_rate);
 	// Title
 	AVDictionaryEntry* tag = av_dict_get(_fmt_ctx->metadata, "title", NULL, 0);
 	if (tag != NULL)
 		attrs[(__bridge NSString*)kMDItemTitle] = @(tag->value);
 
 	NSMutableArray* codecs = [[NSMutableArray alloc] init];
-	for (int stream_idx = 0; stream_idx < (int)_fmt_ctx->nb_streams; stream_idx++)
+	for (unsigned int stream_idx = 0; stream_idx < _fmt_ctx->nb_streams; stream_idx++)
 	{
 		AVStream* stream = _fmt_ctx->streams[stream_idx];
 		AVCodecContext* dec_ctx = stream->codec;
-		//const BOOL def = (stream->disposition & AV_DISPOSITION_DEFAULT);
 		const BOOL forced = (stream->disposition & AV_DISPOSITION_FORCED);
 
 		if (AVMEDIA_TYPE_VIDEO == dec_ctx->codec_type)
@@ -249,9 +250,9 @@
 			continue;
 		
 		AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
-		if (codec)
+		if (codec != NULL)
 		{
-			const char* cname;
+			const char* cname = NULL;
 			switch (codec->id)
 			{
 				case AV_CODEC_ID_H263:
@@ -266,53 +267,63 @@
 				case AV_CODEC_ID_HEVC:
 					cname = "H.265";
 					break;
-				case AV_CODEC_ID_MJPEG:
-					cname = "Motion JPEG";
-					break;
-				case AV_CODEC_ID_VORBIS:
-					cname = "Vorbis";
+				case AV_CODEC_ID_MPEG2VIDEO:
+					cname = "MPEG-2";
 					break;
 				case AV_CODEC_ID_AAC:
 					cname = "AAC";
 					break;
 				case AV_CODEC_ID_AC3:
-					cname = "AC-3";
+					cname = "AC3";
 					break;
 				case AV_CODEC_ID_DTS:
 					cname = "DTS";
 					break;
-				case AV_CODEC_ID_TRUEHD:
-					cname = "TrueHD";
-					break;
 				case AV_CODEC_ID_FLAC:
 					cname = "FLAC";
 					break;
-				case AV_CODEC_ID_MP2:
-					cname = "MPEG Layer 2";
-					break;
 				case AV_CODEC_ID_MP3:
-					cname = "MPEG Layer 3";
+					cname = "MP3";
+					break;
+				case AV_CODEC_ID_OPUS:
+					cname = "Opus";
+					break;
+				case AV_CODEC_ID_TRUEHD:
+					cname = "TrueHD";
+					break;
+				case AV_CODEC_ID_VORBIS:
+					cname = "Vorbis";
 					break;
 				case AV_CODEC_ID_ASS:
-					cname = "Advanced SubStation Alpha";
+					cname = "ASS";
 					break;
 				case AV_CODEC_ID_SSA:
-					cname = "SubStation Alpha";
+					cname = "SSA";
 					break;
 				case AV_CODEC_ID_HDMV_PGS_SUBTITLE:
 					cname = "PGS";
 					break;
 				case AV_CODEC_ID_SRT:
-					cname = "SubRip";
+				case AV_CODEC_ID_SUBRIP:
+					cname = "SRT";
+					break;
+				case AV_CODEC_ID_DVD_SUBTITLE:
+					cname = "VobSub";
+					break;
+				case AV_CODEC_ID_MICRODVD:
+					cname = "SUB";
+					break;
+				case AV_CODEC_ID_SAMI:
+					cname = "SMI";
 					break;
 				default:
 					cname = codec->long_name ? codec->long_name : codec->name;
-				}
+			}
 			
 			if (cname)
 			{
 				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
-				NSString* s = profile ? [NSString stringWithFormat:@"%s [%s]", cname, profile] : [NSString stringWithUTF8String:cname];
+				NSString* s = (profile != NULL) ? [NSString stringWithFormat:@"%s [%s]", cname, profile] : [NSString stringWithUTF8String:cname];
 				if (![codecs containsObject:s])
 					[codecs addObject:s];
 			}
@@ -394,7 +405,7 @@
 			AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
 			if (codec != NULL)
 			{
-				const char* cname;
+				const char* cname = NULL;
 				switch (codec->id)
 				{
 					case AV_CODEC_ID_H263:
@@ -408,6 +419,9 @@
 						break;
 					case AV_CODEC_ID_HEVC:
 						cname = "H.265";
+						break;
+					case AV_CODEC_ID_MPEG2VIDEO:
+						cname = "MPEG-2";
 						break;
 					default:
 						cname = codec->long_name ? codec->long_name : codec->name;
@@ -468,29 +482,29 @@
 				const char* cname = NULL;
 				switch (codec->id)
 				{
+					case AV_CODEC_ID_AAC:
+						cname = "AAC";
+						break;
+					case AV_CODEC_ID_AC3:
+						cname = "AC3";
+						break;
+					case AV_CODEC_ID_DTS:
+						cname = "DTS";
+						break;
 					case AV_CODEC_ID_FLAC:
 						cname = "FLAC";
 						break;
 					case AV_CODEC_ID_MP3:
 						cname = "MP3";
 						break;
-					case AV_CODEC_ID_AAC:
-						cname = "AAC";
-						break;
-					case AV_CODEC_ID_VORBIS:
-						cname = "Vorbis";
-						break;
-					case AV_CODEC_ID_AC3:
-						cname = "AC3";
+					case AV_CODEC_ID_OPUS:
+						cname = "Opus";
 						break;
 					case AV_CODEC_ID_TRUEHD:
 						cname = "TrueHD";
 						break;
-					case AV_CODEC_ID_DTS:
-						cname = "DTS";
-						break;
-					case AV_CODEC_ID_OPUS:
-						cname = "Opus";
+					case AV_CODEC_ID_VORBIS:
+						cname = "Vorbis";
 						break;
 					default:
 						cname = codec->long_name ? codec->long_name : codec->name;
