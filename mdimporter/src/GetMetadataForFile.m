@@ -8,7 +8,6 @@
 //
 
 
-#import <CoreFoundation/CoreFoundation.h>
 #import "Tools.h"
 #import "NYXMovie.h"
 
