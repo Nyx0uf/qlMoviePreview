@@ -37,14 +37,15 @@ OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailReques
 		// Create thumbnail
 		NYXMovie* movie = [[NYXMovie alloc] initWithFilepath:filepath];
 		if (nil == movie)
-		{
 			return kQLReturnNoError;
-		}
+
+		// Re-check if cancelled
+		if (QLThumbnailRequestIsCancelled(thumbnail))
+			return kQLReturnNoError;
+	
 		NSString* thumbnailpath = [[@"/tmp/qlmoviepreview/" stringByAppendingPathComponent:[Tools md5String:filepath]] stringByAppendingPathExtension:@"png"];
 		if (![movie createThumbnailAtPath:thumbnailpath ofSize:(NYXSize){.w = 1280, .h = 720} atPosition:60])
-		{
 			return kQLReturnNoError;
-		}
 
 		// Re-check if cancelled
 		if (QLThumbnailRequestIsCancelled(thumbnail))

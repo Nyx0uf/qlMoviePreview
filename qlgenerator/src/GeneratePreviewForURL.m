@@ -48,6 +48,11 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 			QLPreviewRequestSetURLRepresentation(preview, url, contentTypeUTI, NULL);
 			return kQLReturnNoError;
 		}
+
+		// Re-check if cancelled
+		if (QLPreviewRequestIsCancelled(preview))
+			return kQLReturnNoError;
+
 		NSString* thumbnailpath = [[@"/tmp/qlmoviepreview/" stringByAppendingPathComponent:[Tools md5String:filepath]] stringByAppendingPathExtension:@"png"];
 		if (![movie createThumbnailAtPath:thumbnailpath ofSize:(NYXSize){.w = 1280, .h = 720} atPosition:60])
 		{
@@ -55,7 +60,7 @@ OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef
 			return kQLReturnNoError;
 		}
 
-		// Check if cancelled
+		// Re-check if cancelled
 		if (QLPreviewRequestIsCancelled(preview))
 			return kQLReturnNoError;
 
