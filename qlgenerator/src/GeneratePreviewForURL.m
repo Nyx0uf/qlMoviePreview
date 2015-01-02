@@ -20,7 +20,7 @@ OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview,
 void CancelPreviewGeneration(void* thisInterface, QLPreviewRequestRef preview);
 
 
-OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options)
+OSStatus GeneratePreviewForURL(__unused void* thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, __unused CFDictionaryRef options)
 {
 	@autoreleasepool
 	{
@@ -97,6 +97,6 @@ OSStatus GeneratePreviewForURL(void* thisInterface, QLPreviewRequestRef preview,
 	}
 }
 
-void CancelPreviewGeneration(void* thisInterface, QLPreviewRequestRef preview)
+void CancelPreviewGeneration(__unused void* thisInterface, __unused QLPreviewRequestRef preview)
 {
 }

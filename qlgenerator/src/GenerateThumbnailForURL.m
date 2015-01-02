@@ -17,7 +17,7 @@ OSStatus GenerateThumbnailForURL(void* thisInterface, QLThumbnailRequestRef thum
 void CancelThumbnailGeneration(void* thisInterface, QLThumbnailRequestRef thumbnail);
 
 
-OSStatus GenerateThumbnailForURL(void* thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options, CGSize maxSize)
+OSStatus GenerateThumbnailForURL(__unused void* thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, __unused CFDictionaryRef options, __unused CGSize maxSize)
 {
 	@autoreleasepool
 	{
@@ -58,6 +58,6 @@ OSStatus GenerateThumbnailForURL(void* thisInterface, QLThumbnailRequestRef thum
 	}
 }
 
-void CancelThumbnailGeneration(void* thisInterface, QLThumbnailRequestRef thumbnail)
+void CancelThumbnailGeneration(__unused void* thisInterface, __unused QLThumbnailRequestRef thumbnail)
 {
 }
