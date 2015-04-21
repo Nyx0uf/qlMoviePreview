@@ -410,7 +410,7 @@
 			// WIDTHxHEIGHT (DAR)
 			const int height = dec_ctx->height;
 			int width = dec_ctx->width;
-			AVRational sar = av_guess_sample_aspect_ratio(_fmt_ctx, stream, NULL);
+			const AVRational sar = av_guess_sample_aspect_ratio(_fmt_ctx, stream, NULL);
 			if ((sar.num) && (sar.den))
 				width = (int)av_rescale(dec_ctx->width, sar.num, sar.den);
 			[str_video appendFormat:@"<li><span class=\"st\">Resolution:</span> <span class=\"sc\">%dx%d", width, height];
@@ -447,7 +447,9 @@
 				[str_video appendFormat:@"<li><span class=\"st\">Format:</span> <span class=\"sc\">%s", cname];
 				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
 				if (profile != NULL)
-					[str_video appendFormat:@" [%s]", profile];
+				{
+					[str_video appendFormat:@" [%s@L%d]", profile, dec_ctx->level];
+				}
 				if (dec_ctx->bit_rate > 0)
 					[str_video appendFormat:@" / %d Kbps", (int)((float)dec_ctx->bit_rate / 1000.0f)];
 				if (dec_ctx->refs > 0)
@@ -465,10 +467,11 @@
 			}
 
 			// Framerate
-			if ((stream->avg_frame_rate.den) && (stream->avg_frame_rate.num))
-				[str_video appendFormat:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\">%.3f</span></li>", (stream->avg_frame_rate.num * 100) / (double)stream->avg_frame_rate.den / 100.0];
-			else if ((stream->r_frame_rate.den) && (stream->r_frame_rate.num))
-				[str_video appendFormat:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\">%.3f</span></li>", (stream->r_frame_rate.num * 100) / (double)stream->r_frame_rate.den / 100.0];
+			const AVRational rate = av_stream_get_r_frame_rate(stream);
+			if ((rate.den) && (rate.num))
+				[str_video appendFormat:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\">%.3f</span></li>", ((double)rate.num * 100.0) / (double)rate.den / 100.0];
+			else if ((stream->avg_frame_rate.den) && (stream->avg_frame_rate.num))
+				[str_video appendFormat:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\">%.3f</span></li>", ((double)stream->avg_frame_rate.num * 100.0) / (double)stream->avg_frame_rate.den / 100.0];
 			else
 				[str_video appendString:@"<li><span class=\"st\">Framerate:</span> <span class=\"sc\"><em>Undefined</em></span></li>"];
 
