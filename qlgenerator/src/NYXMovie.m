@@ -448,7 +448,40 @@
 				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
 				if (profile != NULL)
 				{
-					[str_video appendFormat:@" [%s@L%d]", profile, dec_ctx->level];
+					NSString* level = @"";
+					switch (dec_ctx->level)
+					{
+						case 30:
+							level = @"3.0";
+							break;
+						case 31:
+							level = @"3.1";
+							break;
+						case 32:
+							level = @"3.2";
+							break;
+						case 40:
+							level = @"4.0";
+							break;
+						case 41:
+							level = @"4.1";
+							break;
+						case 42:
+							level = @"4.2";
+							break;
+						case 50:
+							level = @"5.0";
+							break;
+						case 51:
+							level = @"5.1";
+							break;
+						case 52:
+							level = @"5.2";
+							break;
+						default:
+							level = [@(dec_ctx->level) stringValue];
+					}
+					[str_video appendFormat:@" [%s@L%@]", profile, level];
 				}
 				if (dec_ctx->bit_rate > 0)
 					[str_video appendFormat:@" / %d Kbps", (int)((float)dec_ctx->bit_rate / 1000.0f)];
