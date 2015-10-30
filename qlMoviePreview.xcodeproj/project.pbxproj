@@ -17,6 +17,11 @@
 		1E5AE87718BC9957004FB76C /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E5AE87618BC9957004FB76C /* QuickLook.framework */; };
 		1E5AE87918BC9957004FB76C /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E5AE87818BC9957004FB76C /* ApplicationServices.framework */; };
 		1E5AE87B18BC9957004FB76C /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E5AE87A18BC9957004FB76C /* CoreServices.framework */; };
+		1E812E6B1BE37F2E00D053A1 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E812E6A1BE37F2E00D053A1 /* VideoToolbox.framework */; };
+		1E812E6C1BE37F3F00D053A1 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E812E6A1BE37F2E00D053A1 /* VideoToolbox.framework */; };
+		1E812E6E1BE37F4F00D053A1 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E812E6D1BE37F4F00D053A1 /* CoreMedia.framework */; };
+		1E812E6F1BE37F5B00D053A1 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E812E6D1BE37F4F00D053A1 /* CoreMedia.framework */; };
+		1E812E701BE37F6B00D053A1 /* VideoDecodeAcceleration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA913211A49BAEF00E549E3 /* VideoDecodeAcceleration.framework */; };
 		1EA901321A49A45C00E549E3 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA901311A49A45C00E549E3 /* libz.dylib */; };
 		1EA901341A49A46500E549E3 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA901331A49A46500E549E3 /* libbz2.dylib */; };
 		1EA901361A49A46E00E549E3 /* liblzma.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA901351A49A46E00E549E3 /* liblzma.dylib */; };
@@ -27,7 +32,6 @@
 		1EA9131D1A49BAB900E549E3 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA913181A49BAB900E549E3 /* libswresample.a */; };
 		1EA9131E1A49BAB900E549E3 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA913191A49BAB900E549E3 /* libswscale.a */; };
 		1EA913201A49BAE200E549E3 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA9131F1A49BAE200E549E3 /* CoreVideo.framework */; };
-		1EA913221A49BAEF00E549E3 /* VideoDecodeAcceleration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EA913211A49BAEF00E549E3 /* VideoDecodeAcceleration.framework */; };
 		1ECBF5311A4ABC6500CBEF22 /* NYXMovie.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ECBF52F1A4ABC6500CBEF22 /* NYXMovie.h */; };
 		1ECBF5321A4ABC6500CBEF22 /* NYXMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ECBF5301A4ABC6500CBEF22 /* NYXMovie.m */; };
 		1ECBF54C1A4ACEFD00CBEF22 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1ECBF5481A4ACEFD00CBEF22 /* Info.plist */; };
@@ -64,6 +68,8 @@
 		1E5AE87618BC9957004FB76C /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		1E5AE87818BC9957004FB76C /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		1E5AE87A18BC9957004FB76C /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		1E812E6A1BE37F2E00D053A1 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		1E812E6D1BE37F4F00D053A1 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		1EA901311A49A45C00E549E3 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		1EA901331A49A46500E549E3 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
 		1EA901351A49A46E00E549E3 /* liblzma.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzma.dylib; path = usr/lib/liblzma.dylib; sourceTree = SDKROOT; };
@@ -87,11 +93,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E812E701BE37F6B00D053A1 /* VideoDecodeAcceleration.framework in Frameworks */,
+				1E812E6E1BE37F4F00D053A1 /* CoreMedia.framework in Frameworks */,
+				1E812E6C1BE37F3F00D053A1 /* VideoToolbox.framework in Frameworks */,
 				1E5AE87918BC9957004FB76C /* ApplicationServices.framework in Frameworks */,
 				1E5AE87B18BC9957004FB76C /* CoreServices.framework in Frameworks */,
 				1EA913201A49BAE200E549E3 /* CoreVideo.framework in Frameworks */,
 				1E5AE87718BC9957004FB76C /* QuickLook.framework in Frameworks */,
-				1EA913221A49BAEF00E549E3 /* VideoDecodeAcceleration.framework in Frameworks */,
 				1EA9131A1A49BAB900E549E3 /* libavcodec.a in Frameworks */,
 				1EA9131B1A49BAB900E549E3 /* libavformat.a in Frameworks */,
 				1EA9131C1A49BAB900E549E3 /* libavutil.a in Frameworks */,
@@ -108,6 +116,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E812E6F1BE37F5B00D053A1 /* CoreMedia.framework in Frameworks */,
+				1E812E6B1BE37F2E00D053A1 /* VideoToolbox.framework in Frameworks */,
 				1ECBF5511A4ACF5D00CBEF22 /* ApplicationServices.framework in Frameworks */,
 				1ECBF5521A4ACF5D00CBEF22 /* CoreServices.framework in Frameworks */,
 				1ECBF5531A4ACF5D00CBEF22 /* CoreVideo.framework in Frameworks */,
@@ -182,6 +192,8 @@
 		1E5AE87518BC9957004FB76C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1E812E6D1BE37F4F00D053A1 /* CoreMedia.framework */,
+				1E812E6A1BE37F2E00D053A1 /* VideoToolbox.framework */,
 				1E5AE87818BC9957004FB76C /* ApplicationServices.framework */,
 				1E5AE87A18BC9957004FB76C /* CoreServices.framework */,
 				1EA9131F1A49BAE200E549E3 /* CoreVideo.framework */,
@@ -490,6 +502,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_NULLABLE_TO_NONNULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
@@ -539,6 +552,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_NULLABLE_TO_NONNULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
