@@ -399,6 +399,7 @@
 	{
 		AVStream* stream = _fmt_ctx->streams[stream_idx];
 		AVCodecContext* dec_ctx = stream->codec;
+
 		const BOOL def = (stream->disposition & AV_DISPOSITION_DEFAULT);
 		const BOOL forced = (stream->disposition & AV_DISPOSITION_FORCED);
 		if (AVMEDIA_TYPE_VIDEO == dec_ctx->codec_type) /* Video stream(s) */
@@ -491,8 +492,9 @@
 
 				if (profile != NULL)
 				{
+					//NSLog(@"profile = %s", profile);
 					// TODO: More reliable way to find bit depth
-					if ((strstr(profile, "High 10") != NULL) || (strstr(profile, "High 4:4:4") != NULL))
+					if ((strstr(profile, "High 10") != NULL) || (strstr(profile, "High 4:4:4") != NULL) || (strstr(profile, "Main 10") != NULL))
 						[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">10 bits</span></li>"];
 					else // Assume 8 bits
 						[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">8 bits</span></li>"];

@@ -1,1 +1,0 @@
-./configure --cc=clang --arch=x86_64 --extra-cflags=-mmacosx-version-min=10.9 --extra-ldflags=-mmacosx-version-min=10.9 --enable-gpl --enable-hardcoded-tables --disable-indevs --disable-network --disable-avdevice --disable-muxers --disable-encoders --disable-bsfs --disable-filters --disable-sdl --disable-debug --disable-programs --disable-doc
