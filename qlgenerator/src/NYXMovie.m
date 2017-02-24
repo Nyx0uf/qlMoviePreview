@@ -12,6 +12,7 @@
 #import <libavformat/avformat.h>
 #import <libswscale/swscale.h>
 #import <libavutil/imgutils.h>
+#import <libavutil/samplefmt.h>
 #import <sys/stat.h>
 #import <time.h>
 
@@ -414,7 +415,6 @@
 		[str_general appendString:@"<li><span class=\"st\">Title:</span> <span class=\"sc\"><em>Undefined</em></span></li>"];
 
 	// Duration
-	// TODO: Don't display min/sec when they are 0
 	time_t timestamp = (time_t)((double)_fmt_ctx->duration / AV_TIME_BASE);
 	struct tm* ptm = gmtime(&timestamp);
 	const size_t hour = (size_t)ptm->tm_hour;
@@ -534,8 +534,17 @@
 				}
 				if (codecpar->bit_rate > 0)
 					[str_video appendFormat:@" / %d Kbps", (int)((float)codecpar->bit_rate / 1000.0f)];
-				//if (codecpar->refs > 0)
-				//	[str_video appendFormat:@" / %d ReF", codecpar->refs];
+				AVCodecContext* dec_ctx = avcodec_alloc_context3(NULL);
+				if (dec_ctx != NULL)
+				{
+					if (avcodec_parameters_to_context(dec_ctx, codecpar) == 0)
+					{
+						if (dec_ctx->refs > 0)
+							[str_video appendFormat:@" / %d ReF", dec_ctx->refs];
+					}
+					avcodec_free_context(&dec_ctx);
+				}
+
 				[str_video appendString:@"</span></li>"];
 
 				if (profile != NULL)
@@ -622,8 +631,7 @@
 				if (profile != NULL)
 					[str_audio appendFormat:@" [%s]", profile];
 				// TODO: find audio bit depth
-				//if (codecpar->bits_per_raw_sample)
-				//[str_audio appendFormat:@" / %d", codecpar->bits_per_coded_sample];
+				//[str_audio appendFormat:@" / %d", (av_get_bytes_per_sample(codecpar->format) << 3)];
 				if (codecpar->sample_rate > 0)
 					[str_audio appendFormat:@" / %.1f KHz", (float)((float)codecpar->sample_rate / 1000.0f)];
 				if (codecpar->bit_rate > 0)
