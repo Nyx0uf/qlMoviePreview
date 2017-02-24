@@ -94,6 +94,7 @@ QuickLookGeneratorPluginType* AllocQuickLookGeneratorPluginType(CFUUIDRef inFact
 {
 	// ffmpeg
 	av_register_all();
+	avcodec_register_all();
 
 	// Get bundle reference
 	__selfBundle = [NSBundle bundleWithIdentifier:@"io.whine.qlmoviepreview"];

@@ -11,6 +11,7 @@
 #import "NYXMovie.h"
 #import <libavformat/avformat.h>
 #import <libswscale/swscale.h>
+#import <libavutil/imgutils.h>
 #import <sys/stat.h>
 #import <time.h>
 
@@ -27,8 +28,6 @@
 	AVStream* _stream;
 	/// Single frame for thumbnail
 	AVFrame* _frame;
-	/// Thumbnail
-	AVPicture _picture;
 	/// Current stream ID
 	int _stream_idx;
 }
@@ -48,7 +47,8 @@
 		_frame = NULL;
 		_stream_idx = 0;
 
-		if (avformat_open_input(&_fmt_ctx, [filepath UTF8String], NULL, NULL) != 0)
+		int ret = avformat_open_input(&_fmt_ctx, [filepath UTF8String], NULL, NULL);
+		if (ret != 0)
 		{
 			return nil;
 		}
@@ -64,14 +64,33 @@
 		for (_stream_idx = 0; _stream_idx < (int)_fmt_ctx->nb_streams; _stream_idx++)
 		{
 			_stream = _fmt_ctx->streams[_stream_idx];
-			_dec_ctx = _stream->codec;
-			if ((_dec_ctx) && (_dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO))
+
+			AVCodecParameters* codecpar = _stream->codecpar;
+			//_dec_ctx = _stream->codec;
+			if ((codecpar) && (codecpar->codec_type == AVMEDIA_TYPE_VIDEO))
 			{
-				if (_dec_ctx->height > 0)
-					codec = avcodec_find_decoder(_dec_ctx->codec_id);
+				if (codecpar->height > 0)
+				{
+					codec = avcodec_find_decoder(codecpar->codec_id);
+
+					_dec_ctx = avcodec_alloc_context3(NULL);
+					if (_dec_ctx == NULL)
+					{
+						avformat_close_input(&_fmt_ctx);
+						return nil;
+					}
+
+					if (avcodec_parameters_to_context(_dec_ctx, codecpar) < 0)
+					{
+						avcodec_free_context(&_dec_ctx);
+						avformat_close_input(&_fmt_ctx);
+						return nil;
+					}
+				}
 				break;
 			}
 		}
+
 		// Open codec
 		if ((NULL == codec) || (avcodec_open2(_dec_ctx, codec, NULL) != 0))
 		{
@@ -92,10 +111,19 @@
 
 -(void)dealloc
 {
-	avpicture_free(&_picture);
-	av_frame_free(&_frame);
-	avcodec_close(_dec_ctx);
-	avformat_close_input(&_fmt_ctx);
+	if (_frame != NULL)
+	{
+		av_frame_free(&_frame);
+	}
+	if (_dec_ctx != NULL)
+	{
+		avcodec_close(_dec_ctx);
+		avcodec_free_context(&_dec_ctx);
+	}
+	if (_fmt_ctx != NULL)
+	{
+		avformat_close_input(&_fmt_ctx);
+	}
 }
 
 #pragma mark - Public
@@ -122,50 +150,60 @@
 	packet.data = NULL;
 	packet.size = 0;
 	int got_frame = 0;
-	while (av_read_frame(_fmt_ctx, &packet) >= 0)
+	while (av_read_frame(_fmt_ctx, &packet) >= 0 && !got_frame)
 	{
 		if (packet.stream_index == _stream_idx)
-			avcodec_decode_video2(_dec_ctx, _frame, &got_frame, &packet);
-		av_free_packet(&packet);
-		if (got_frame)
-			break;
+		{
+			avcodec_send_packet(_dec_ctx, &packet);
+			got_frame = avcodec_receive_frame(_dec_ctx, _frame) >= 0;
+		}
+		av_packet_unref(&packet);
 	}
 	if (!got_frame) // No frame :<
 	{
 		return false;
 	}
 
-	// Allocate thumbnail
-	avpicture_free(&_picture);
-	if (avpicture_alloc(&_picture, AV_PIX_FMT_RGB24, (int)size.w, (int)size.h) != 0)
+	// Convert frame and scale if needed
+	struct SwsContext* sws_ctx = sws_getContext(_dec_ctx->width, _dec_ctx->height, _dec_ctx->pix_fmt, (int)size.w, (int)size.h, AV_PIX_FMT_RGB24, SWS_SPLINE, NULL, NULL, NULL);
+	if (!sws_ctx)
+	{
+		return false;
+	}
+	uint8_t* buffer = NULL;
+	const size_t linesize = ((3 * size.w + 15) / 16) * 16; // align
+	if (!(buffer = malloc(linesize * size.h)))
 	{
 		return false;
 	}
 
-	// Convert frame and scale if needed
-	struct SwsContext* sws_ctx = sws_getContext(_dec_ctx->width, _dec_ctx->height, _dec_ctx->pix_fmt, (int)size.w, (int)size.h, AV_PIX_FMT_RGB24, SWS_SPLINE, NULL, NULL, NULL);
-	if (NULL == sws_ctx)
-	{
-		return false;
-	}
-	sws_scale(sws_ctx, (const uint8_t* const*)_frame->data, _frame->linesize, 0, _dec_ctx->height, _picture.data, _picture.linesize);
+	uint8_t* const pixels[4] = { buffer };
+	const int stride[4] = { (int)linesize };
+	sws_scale(sws_ctx, (const uint8_t* const*)_frame->data, _frame->linesize, 0, _dec_ctx->height, pixels, stride);
 	sws_freeContext(sws_ctx);
 
 	// Create CGImageRef
-	CGDataProviderRef data_provider = CGDataProviderCreateWithData(NULL, _picture.data[0], (size.w * size.h * 3), NULL);
+	CGDataProviderRef data_provider = CGDataProviderCreateWithData(NULL, buffer, linesize * size.h, NULL);
+	if (!data_provider)
+	{
+		free(buffer);
+		return false;
+	}
 	CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
-	CGImageRef img_ref = CGImageCreate(size.w, size.h, 8, 24, size.w * 3, color_space, kCGBitmapByteOrderDefault, data_provider, NULL, false, kCGRenderingIntentDefault);
+	CGImageRef img_ref = CGImageCreate(size.w, size.h, 8, 24, (size_t)linesize, color_space, kCGBitmapByteOrderDefault, data_provider, NULL, false, kCGRenderingIntentDefault);
 	CGColorSpaceRelease(color_space);
 	CGDataProviderRelease(data_provider);
 
-	if (NULL == img_ref)
+	free(buffer);
+
+	if (!img_ref)
 	{
 		return false;
 	}
 
 	// Save
 	CGImageDestinationRef dst = CGImageDestinationCreateWithURL((__bridge CFURLRef)[NSURL fileURLWithPath:path], kUTTypePNG, 1, NULL);
-	if (NULL == dst)
+	if (!dst)
 	{
 		CGImageRelease(img_ref);
 		return false;
@@ -197,32 +235,32 @@
 	for (unsigned int stream_idx = 0; stream_idx < _fmt_ctx->nb_streams; stream_idx++)
 	{
 		AVStream* stream = _fmt_ctx->streams[stream_idx];
-		AVCodecContext* dec_ctx = stream->codec;
+		AVCodecParameters* dec_par = stream->codecpar;
 		const BOOL forced = (stream->disposition & AV_DISPOSITION_FORCED);
 
-		if (AVMEDIA_TYPE_VIDEO == dec_ctx->codec_type)
+		if (AVMEDIA_TYPE_VIDEO == dec_par->codec_type)
 		{
-			if ((dec_ctx->bit_rate > 0) && (nil == attrs[(__bridge NSString*)kMDItemVideoBitRate]))
-				attrs[(__bridge NSString*)kMDItemVideoBitRate] = @(dec_ctx->bit_rate);
-			if ((dec_ctx->height > 0) && (nil == attrs[(__bridge NSString*)kMDItemPixelHeight]))
+			if ((dec_par->bit_rate > 0) && (nil == attrs[(__bridge NSString*)kMDItemVideoBitRate]))
+				attrs[(__bridge NSString*)kMDItemVideoBitRate] = @(dec_par->bit_rate);
+			if ((dec_par->height > 0) && (nil == attrs[(__bridge NSString*)kMDItemPixelHeight]))
 			{
-				attrs[(__bridge NSString*)kMDItemPixelHeight] = @(dec_ctx->height);
+				attrs[(__bridge NSString*)kMDItemPixelHeight] = @(dec_par->height);
 				AVRational sar = av_guess_sample_aspect_ratio(_fmt_ctx, stream, NULL);
 				if ((sar.num) && (sar.den))
-					attrs[(__bridge NSString*)kMDItemPixelWidth] = @(av_rescale(dec_ctx->width, sar.num, sar.den));
+					attrs[(__bridge NSString*)kMDItemPixelWidth] = @(av_rescale(dec_par->width, sar.num, sar.den));
 				else
-					attrs[(__bridge NSString*)kMDItemPixelWidth] = @(dec_ctx->width);
+					attrs[(__bridge NSString*)kMDItemPixelWidth] = @(dec_par->width);
 			}
 			[types addObject:@"Video"];
 		}
-		else if (AVMEDIA_TYPE_AUDIO == dec_ctx->codec_type)
+		else if (AVMEDIA_TYPE_AUDIO == dec_par->codec_type)
 		{
-			if ((dec_ctx->bit_rate > 0) && (nil == attrs[(__bridge NSString*)kMDItemAudioBitRate]))
-				attrs[(__bridge NSString*)kMDItemAudioBitRate] = @(dec_ctx->bit_rate);
-			if ((dec_ctx->channels > 0) && (nil == attrs[(__bridge NSString*)kMDItemAudioChannelCount]))
+			if ((dec_par->bit_rate > 0) && (nil == attrs[(__bridge NSString*)kMDItemAudioBitRate]))
+				attrs[(__bridge NSString*)kMDItemAudioBitRate] = @(dec_par->bit_rate);
+			if ((dec_par->channels > 0) && (nil == attrs[(__bridge NSString*)kMDItemAudioChannelCount]))
 			{
 				NSNumber* channels;
-				switch (dec_ctx->channels)
+				switch (dec_par->channels)
 				{
 					case 3:
 						channels = @2.1f;
@@ -237,12 +275,12 @@
 						channels = @7.1f;
 						break;
 					default:
-						channels = @(dec_ctx->channels);
+						channels = @(dec_par->channels);
 				}
 				attrs[(__bridge NSString*)kMDItemAudioChannelCount] = channels;
 			}
-			if ((dec_ctx->sample_rate > 0) && (nil == attrs[(__bridge NSString*)kMDItemAudioSampleRate]))
-				attrs[(__bridge NSString*)kMDItemAudioSampleRate] = @(dec_ctx->sample_rate);
+			if ((dec_par->sample_rate > 0) && (nil == attrs[(__bridge NSString*)kMDItemAudioSampleRate]))
+				attrs[(__bridge NSString*)kMDItemAudioSampleRate] = @(dec_par->sample_rate);
 
 			// Lang
 			tag = av_dict_get(stream->metadata, "language", NULL, 0);
@@ -251,7 +289,7 @@
 
 			[types addObject:@"Audio"];
 		}
-		else if (AVMEDIA_TYPE_SUBTITLE == dec_ctx->codec_type)
+		else if (AVMEDIA_TYPE_SUBTITLE == dec_par->codec_type)
 		{
 			if (forced)
 				continue;
@@ -261,7 +299,7 @@
 		else
 			continue;
 		
-		AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
+		AVCodec* codec = avcodec_find_decoder(dec_par->codec_id);
 		if (codec != NULL)
 		{
 			const char* cname = NULL;
@@ -334,7 +372,7 @@
 			
 			if (cname)
 			{
-				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
+				const char* profile = av_get_profile_name(codec, dec_par->profile);
 				NSString* s = (profile != NULL) ? [NSString stringWithFormat:@"%s [%s]", cname, profile] : [NSString stringWithUTF8String:cname];
 				if (![codecs containsObject:s])
 					[codecs addObject:s];
@@ -398,22 +436,22 @@
 	for (unsigned int stream_idx = 0; stream_idx < _fmt_ctx->nb_streams; stream_idx++)
 	{
 		AVStream* stream = _fmt_ctx->streams[stream_idx];
-		AVCodecContext* dec_ctx = stream->codec;
+		AVCodecParameters* dec_par = stream->codecpar;
 
 		const BOOL def = (stream->disposition & AV_DISPOSITION_DEFAULT);
 		const BOOL forced = (stream->disposition & AV_DISPOSITION_FORCED);
-		if (AVMEDIA_TYPE_VIDEO == dec_ctx->codec_type) /* Video stream(s) */
+		if (AVMEDIA_TYPE_VIDEO == dec_par->codec_type) /* Video stream(s) */
 		{
 			// Separator if multiple streams
 			if (nb_video_tracks > 0)
 				[str_video appendString:@"<div class=\"sep\">----</div>"];
 
 			// WIDTHxHEIGHT (DAR)
-			const int height = dec_ctx->height;
-			int width = dec_ctx->width;
+			const int height = dec_par->height;
+			int width = dec_par->width;
 			const AVRational sar = av_guess_sample_aspect_ratio(_fmt_ctx, stream, NULL);
 			if ((sar.num) && (sar.den))
-				width = (int)av_rescale(dec_ctx->width, sar.num, sar.den);
+				width = (int)av_rescale(dec_par->width, sar.num, sar.den);
 			[str_video appendFormat:@"<li><span class=\"st\">Resolution:</span> <span class=\"sc\">%dx%d", width, height];
 			const AVRational dar = stream->display_aspect_ratio;
 			if ((dar.num) && (dar.den))
@@ -421,7 +459,7 @@
 			[str_video appendString:@"</span></li>"];
 
 			// Format, profile, bitrate, reframe
-			AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
+			AVCodec* codec = avcodec_find_decoder(dec_par->codec_id);
 			if (codec != NULL)
 			{
 				const char* cname = NULL;
@@ -446,11 +484,11 @@
 						cname = codec->long_name ? codec->long_name : codec->name;
 				}
 				[str_video appendFormat:@"<li><span class=\"st\">Format:</span> <span class=\"sc\">%s", cname];
-				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
+				const char* profile = av_get_profile_name(codec, dec_par->profile);
 				if (profile != NULL)
 				{
 					NSString* level = @"";
-					switch (dec_ctx->level)
+					switch (dec_par->level)
 					{
 						case 30:
 							level = @"3.0";
@@ -480,14 +518,14 @@
 							level = @"5.2";
 							break;
 						default:
-							level = [@(dec_ctx->level) stringValue];
+							level = [@(dec_par->level) stringValue];
 					}
 					[str_video appendFormat:@" [%s@L%@]", profile, level];
 				}
-				if (dec_ctx->bit_rate > 0)
-					[str_video appendFormat:@" / %d Kbps", (int)((float)dec_ctx->bit_rate / 1000.0f)];
-				if (dec_ctx->refs > 0)
-					[str_video appendFormat:@" / %d ReF", dec_ctx->refs];
+				if (dec_par->bit_rate > 0)
+					[str_video appendFormat:@" / %d Kbps", (int)((float)dec_par->bit_rate / 1000.0f)];
+				//if (dec_par->refs > 0)
+				//	[str_video appendFormat:@" / %d ReF", dec_par->refs];
 				[str_video appendString:@"</span></li>"];
 
 				if (profile != NULL)
@@ -517,7 +555,7 @@
 
 			nb_video_tracks++;
 		}
-		else if (AVMEDIA_TYPE_AUDIO == dec_ctx->codec_type) /* Audio stream(s) */
+		else if (AVMEDIA_TYPE_AUDIO == dec_par->codec_type) /* Audio stream(s) */
 		{
 			// Separator if multiple streams
 			if (nb_audio_tracks > 0)
@@ -532,7 +570,7 @@
 			[str_audio appendFormat:@" %@%@</span></li>", forced ? @"[Forced]" : @"", def ? @"</b>" : @""];
 
 			// Format, profile, bit depth, bitrate, sampling rate
-			AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
+			AVCodec* codec = avcodec_find_decoder(dec_par->codec_id);
 			if (codec != NULL)
 			{
 				const char* cname = NULL;
@@ -566,22 +604,22 @@
 						cname = codec->long_name ? codec->long_name : codec->name;
 				}
 				[str_audio appendFormat:@"<li><span class=\"st\">Format:</span> <span class=\"sc\">%s", cname];
-				const char* profile = av_get_profile_name(codec, dec_ctx->profile);
+				const char* profile = av_get_profile_name(codec, dec_par->profile);
 				if (profile != NULL)
 					[str_audio appendFormat:@" [%s]", profile];
 				// TODO: find audio bit depth
-				//if (dec_ctx->bits_per_raw_sample)
-				//[str_audio appendFormat:@" / %d", dec_ctx->bits_per_coded_sample];
-				if (dec_ctx->sample_rate > 0)
-					[str_audio appendFormat:@" / %.1f KHz", (float)((float)dec_ctx->sample_rate / 1000.0f)];
-				if (dec_ctx->bit_rate > 0)
-					[str_audio appendFormat:@" / %d Kbps", (int)((float)dec_ctx->bit_rate / 1000.0f)];
+				//if (dec_par->bits_per_raw_sample)
+				//[str_audio appendFormat:@" / %d", dec_par->bits_per_coded_sample];
+				if (dec_par->sample_rate > 0)
+					[str_audio appendFormat:@" / %.1f KHz", (float)((float)dec_par->sample_rate / 1000.0f)];
+				if (dec_par->bit_rate > 0)
+					[str_audio appendFormat:@" / %d Kbps", (int)((float)dec_par->bit_rate / 1000.0f)];
 				[str_audio appendString:@"</span></li>"];
 			}
 
 			// Channels
 			NSString* tmp = nil;
-			switch (dec_ctx->channels)
+			switch (dec_par->channels)
 			{
 				case 1:
 					tmp = @"Mono 1.0";
@@ -602,10 +640,10 @@
 					tmp = @"Surround 7.1";
 					break;
 				default:
-					tmp = [NSString stringWithFormat:@"%d", dec_ctx->channels];
+					tmp = [NSString stringWithFormat:@"%d", dec_par->channels];
 					break;
 			}
-			[str_audio appendFormat:@"<li><span class=\"st\">Channels:</span> <span class=\"sc\">%d — <em>%@</em></span></li>", dec_ctx->channels, tmp];
+			[str_audio appendFormat:@"<li><span class=\"st\">Channels:</span> <span class=\"sc\">%d — <em>%@</em></span></li>", dec_par->channels, tmp];
 
 			tag = av_dict_get(stream->metadata, "title", NULL, 0);
 			if (tag != NULL)
@@ -613,7 +651,7 @@
 
 			nb_audio_tracks++;
 		}
-		else if (AVMEDIA_TYPE_SUBTITLE == dec_ctx->codec_type) /* Subs stream(s) */
+		else if (AVMEDIA_TYPE_SUBTITLE == dec_par->codec_type) /* Subs stream(s) */
 		{
 			// Separator if multiple streams
 			if (nb_subs_tracks > 0)
@@ -627,7 +665,7 @@
 				[str_subs appendFormat:@"<li><span class=\"st\">Language:</span> <span class=\"sc\">%@<em>Undefined</em>", def ? @"<b>" : @""];
 			[str_subs appendFormat:@" %@%@</span></li>", forced ? @"[Forced]" : @"", def ? @"</b>" : @""];
 			// Format
-			AVCodec* codec = avcodec_find_decoder(dec_ctx->codec_id);
+			AVCodec* codec = avcodec_find_decoder(dec_par->codec_id);
 			if (codec != NULL)
 			{
 				const char* cname = NULL;
