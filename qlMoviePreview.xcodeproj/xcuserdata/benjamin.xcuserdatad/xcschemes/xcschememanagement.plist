@@ -9,6 +9,11 @@
 			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
+		<key>qlMoviePreview copy.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
 		<key>qlMoviePreview.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -23,6 +28,11 @@
 			<true/>
 		</dict>
 		<key>1ECBF5361A4ACEAA00CBEF22</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>43180E501E60520800CE2869</key>
 		<dict>
 			<key>primary</key>
 			<true/>

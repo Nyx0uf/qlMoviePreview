@@ -97,7 +97,7 @@ QuickLookGeneratorPluginType* AllocQuickLookGeneratorPluginType(CFUUIDRef inFact
 	avcodec_register_all();
 
 	// Get bundle reference
-	__selfBundle = [NSBundle bundleWithIdentifier:@"io.whine.qlmoviepreview"];
+	__selfBundle = [NSBundle bundleWithIdentifier:@"fr.whine.qlmoviepreview"];
 
 	// Create a directory to hold generated thumbnails
 	NSFileManager* file_manager = [[NSFileManager alloc] init];
