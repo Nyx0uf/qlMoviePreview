@@ -406,8 +406,8 @@
 	// Duration
 	// TODO: Don't display min/sec when they are 0
 	time_t timestamp = (time_t)((double)_fmt_ctx->duration / AV_TIME_BASE);
-	struct tm* ptm = localtime(&timestamp);
-	const size_t hour = (size_t)((ptm->tm_hour > 0) ? (ptm->tm_hour - 1) : ptm->tm_hour); // For some reason tm_hour is never 0
+	struct tm* ptm = gmtime(&timestamp);
+	const size_t hour = (size_t)ptm->tm_hour;
 	if (0 == hour)
 		[str_general appendFormat:@"<li><span class=\"st\">Duration:</span> <span class=\"sc\">%dmn %ds</span></li>", ptm->tm_min, ptm->tm_sec];
 	else
