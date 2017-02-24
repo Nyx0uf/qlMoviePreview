@@ -167,6 +167,12 @@
 		return false;
 	}
 
+	// Keep aspect ratio
+	size.w = (size_t)av_rescale(_dec_ctx->width, (int64_t)size.h, _dec_ctx->height);
+	const AVRational sar = av_guess_sample_aspect_ratio(_fmt_ctx, _stream, NULL);
+	if (sar.num && sar.den)
+		size.w = (size_t)av_rescale((int64_t)size.w, sar.num, sar.den);
+
 	// Convert frame and scale if needed
 	struct SwsContext* sws_ctx = sws_getContext(_dec_ctx->width, _dec_ctx->height, _dec_ctx->pix_fmt, (int)size.w, (int)size.h, AV_PIX_FMT_RGB24, SWS_SPLINE, NULL, NULL, NULL);
 	if (!sws_ctx)
