@@ -312,10 +312,10 @@
 					cname = "H.263+";
 					break;
 				case AV_CODEC_ID_H264:
-					cname = "H.264";
+					cname = "H.264 (AVC)";
 					break;
 				case AV_CODEC_ID_HEVC:
-					cname = "H.265";
+					cname = "H.265 (HEVC)";
 					break;
 				case AV_CODEC_ID_MPEG2VIDEO:
 					cname = "MPEG-2";
@@ -418,11 +418,11 @@
 	stat([_filepath UTF8String], &st);
 	NSString* fmt = nil;
 	if (st.st_size > 1073741824) // More than 1Gb
-		fmt = [[NSString alloc] initWithFormat:@"%.1fGb", (float)((float)st.st_size / 1073741824.0f)];
+		fmt = [[NSString alloc] initWithFormat:@"%.1fGB", (float)((float)st.st_size / 1073741824.0f)];
 	else if ((st.st_size < 1073741824) && (st.st_size > 1048576)) // More than 1Mb
-		fmt = [[NSString alloc] initWithFormat:@"%.1fMb", (float)((float)st.st_size / 1048576.0f)];
+		fmt = [[NSString alloc] initWithFormat:@"%.1fMB", (float)((float)st.st_size / 1048576.0f)];
 	else if ((st.st_size < 1048576) && (st.st_size > 1024)) // 1Kb - 1Mb
-		fmt = [[NSString alloc] initWithFormat:@"%.2fKb", (float)((float)st.st_size / 1024.0f)];
+		fmt = [[NSString alloc] initWithFormat:@"%.2fKB", (float)((float)st.st_size / 1024.0f)];
 	else // Less than 1Kb
 		fmt = [[NSString alloc] initWithFormat:@"%lldb", st.st_size];
 	[str_general appendFormat:@"<li><span class=\"st\">Size:</span> <span class=\"sc\">%@</span></li></ul>", fmt];
@@ -472,10 +472,10 @@
 						cname = "H.263+";
 						break;
 					case AV_CODEC_ID_H264:
-						cname = "H.264";
+						cname = "H.264 (AVC)";
 						break;
 					case AV_CODEC_ID_HEVC:
-						cname = "H.265";
+						cname = "H.265 (HEVC)";
 						break;
 					case AV_CODEC_ID_MPEG2VIDEO:
 						cname = "MPEG-2";
@@ -530,12 +530,16 @@
 
 				if (profile != NULL)
 				{
-					//NSLog(@"profile = %s", profile);
-					// TODO: More reliable way to find bit depth
-					if ((strstr(profile, "High 10") != NULL) || (strstr(profile, "High 4:4:4") != NULL) || (strstr(profile, "Main 10") != NULL))
-						[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">10 bits</span></li>"];
-					else // Assume 8 bits
-						[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">8 bits</span></li>"];
+					const char* pix_fmt = av_get_pix_fmt_name(dec_par->format);
+					if (pix_fmt != NULL)
+					{
+						if (strstr(pix_fmt, "p16"))
+							[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">16 bits</span></li>"];
+						else if (strstr(pix_fmt, "p10"))
+							[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">10 bits</span></li>"];
+						else // Assume 8 bits
+							[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">8 bits</span></li>"];
+					}
 				}
 			}
 
