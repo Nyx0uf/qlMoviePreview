@@ -550,18 +550,15 @@
 
 				[str_video appendString:@"</span></li>"];
 
-				if (profile != NULL)
+				const char* pix_fmt = av_get_pix_fmt_name(codecpar->format);
+				if (pix_fmt != NULL)
 				{
-					const char* pix_fmt = av_get_pix_fmt_name(codecpar->format);
-					if (pix_fmt != NULL)
-					{
-						if (strstr(pix_fmt, "p16"))
-							[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">16 bits</span></li>"];
-						else if (strstr(pix_fmt, "p10"))
-							[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">10 bits</span></li>"];
-						else // Assume 8 bits
-							[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">8 bits</span></li>"];
-					}
+					if (strstr(pix_fmt, "p16"))
+						[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">16 bits</span></li>"];
+					else if (strstr(pix_fmt, "p10"))
+						[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">10 bits</span></li>"];
+					else // Assume 8 bits
+						[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">8 bits</span></li>"];
 				}
 			}
 
