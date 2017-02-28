@@ -101,15 +101,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-<<<<<<< HEAD
 				43180E151E602EAD00CE2869 /* CoreMedia.framework in Frameworks */,
 				43180E131E602E9900CE2869 /* VideoToolbox.framework in Frameworks */,
 				43180E0F1E602E2B00CE2869 /* AudioToolbox.framework in Frameworks */,
-=======
-				1E812E701BE37F6B00D053A1 /* VideoDecodeAcceleration.framework in Frameworks */,
-				1E812E6E1BE37F4F00D053A1 /* CoreMedia.framework in Frameworks */,
-				1E812E6C1BE37F3F00D053A1 /* VideoToolbox.framework in Frameworks */,
->>>>>>> origin/master
 				1E5AE87918BC9957004FB76C /* ApplicationServices.framework in Frameworks */,
 				1E5AE87B18BC9957004FB76C /* CoreServices.framework in Frameworks */,
 				1EA913201A49BAE200E549E3 /* CoreVideo.framework in Frameworks */,
@@ -130,14 +124,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-<<<<<<< HEAD
 				43180E161E602EB500CE2869 /* CoreMedia.framework in Frameworks */,
 				43180E121E602E9300CE2869 /* VideoToolbox.framework in Frameworks */,
 				43180E101E602E3400CE2869 /* AudioToolbox.framework in Frameworks */,
-=======
-				1E812E6F1BE37F5B00D053A1 /* CoreMedia.framework in Frameworks */,
-				1E812E6B1BE37F2E00D053A1 /* VideoToolbox.framework in Frameworks */,
->>>>>>> origin/master
 				1ECBF5511A4ACF5D00CBEF22 /* ApplicationServices.framework in Frameworks */,
 				1ECBF5521A4ACF5D00CBEF22 /* CoreServices.framework in Frameworks */,
 				1ECBF5531A4ACF5D00CBEF22 /* CoreVideo.framework in Frameworks */,
@@ -211,14 +200,9 @@
 		1E5AE87518BC9957004FB76C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-<<<<<<< HEAD
 				43180E141E602EAD00CE2869 /* CoreMedia.framework */,
 				43180E111E602E9300CE2869 /* VideoToolbox.framework */,
 				43180E0E1E602E2B00CE2869 /* AudioToolbox.framework */,
-=======
-				1E812E6D1BE37F4F00D053A1 /* CoreMedia.framework */,
-				1E812E6A1BE37F2E00D053A1 /* VideoToolbox.framework */,
->>>>>>> origin/master
 				1E5AE87818BC9957004FB76C /* ApplicationServices.framework */,
 				1E5AE87A18BC9957004FB76C /* CoreServices.framework */,
 				1EA9131F1A49BAE200E549E3 /* CoreVideo.framework */,
