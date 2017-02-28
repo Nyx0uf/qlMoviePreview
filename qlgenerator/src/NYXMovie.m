@@ -456,13 +456,16 @@
 			if (nb_video_tracks > 0)
 				[str_video appendString:@"<div class=\"sep\">----</div>"];
 
-			// WIDTHxHEIGHT (DAR)
-			const int height = codecpar->height;
-			int width = codecpar->width;
+			// show FAR
+			[str_video appendFormat:@"<li><span class=\"st\">Resolution:</span> <span class=\"sc\">%dx%d", codecpar->width, codecpar->height];
 			const AVRational sar = av_guess_sample_aspect_ratio(_fmt_ctx, stream, NULL);
-			if ((sar.num) && (sar.den))
-				width = (int)av_rescale(codecpar->width, sar.num, sar.den);
-			[str_video appendFormat:@"<li><span class=\"st\">Resolution:</span> <span class=\"sc\">%dx%d", width, height];
+			// show DAR if not equal to FAR
+			if ((sar.num) && (sar.den) && (sar.num != sar.den))
+			{
+				const int height = codecpar->height;
+				const int width = (int)av_rescale(codecpar->width, sar.num, sar.den);
+				[str_video appendFormat:@" => %dx%d (SAR %d:%d)", width, height, sar.num, sar.den];
+			}
 			const AVRational dar = stream->display_aspect_ratio;
 			if ((dar.num) && (dar.den))
 				[str_video appendFormat:@" <em>(%d:%d)</em></span></li>", dar.num, dar.den];
