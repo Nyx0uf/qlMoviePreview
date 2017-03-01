@@ -427,14 +427,14 @@
 	struct stat st;
 	stat([_filepath UTF8String], &st);
 	NSString* fmt = nil;
-	if (st.st_size > 1073741824) // More than 1Gb
-		fmt = [[NSString alloc] initWithFormat:@"%.1fGB", (float)((float)st.st_size / 1073741824.0f)];
-	else if ((st.st_size < 1073741824) && (st.st_size > 1048576)) // More than 1Mb
-		fmt = [[NSString alloc] initWithFormat:@"%.1fMB", (float)((float)st.st_size / 1048576.0f)];
-	else if ((st.st_size < 1048576) && (st.st_size > 1024)) // 1Kb - 1Mb
-		fmt = [[NSString alloc] initWithFormat:@"%.2fKB", (float)((float)st.st_size / 1024.0f)];
-	else // Less than 1Kb
-		fmt = [[NSString alloc] initWithFormat:@"%lldb", st.st_size];
+	if (st.st_size > 1073741824) // More than 1Gib
+		fmt = [[NSString alloc] initWithFormat:@"%.1fGiB", (float)((float)st.st_size / 1073741824.0f)];
+	else if ((st.st_size < 1073741824) && (st.st_size > 1048576)) // More than 1Mib
+		fmt = [[NSString alloc] initWithFormat:@"%.1fMiB", (float)((float)st.st_size / 1048576.0f)];
+	else if ((st.st_size < 1048576) && (st.st_size > 1024)) // 1Kib - 1Mib
+		fmt = [[NSString alloc] initWithFormat:@"%.2fKiB", (float)((float)st.st_size / 1024.0f)];
+	else // Less than 1Kib
+		fmt = [[NSString alloc] initWithFormat:@"%lldB", st.st_size];
 	[str_general appendFormat:@"<li><span class=\"st\">Size:</span> <span class=\"sc\">%@</span></li></ul>", fmt];
 	out_dict[@"general"] = str_general;
 
@@ -456,13 +456,16 @@
 			if (nb_video_tracks > 0)
 				[str_video appendString:@"<div class=\"sep\">----</div>"];
 
-			// WIDTHxHEIGHT (DAR)
-			const int height = codecpar->height;
-			int width = codecpar->width;
+			// show FAR
+			[str_video appendFormat:@"<li><span class=\"st\">Resolution:</span> <span class=\"sc\">%dx%d", codecpar->width, codecpar->height];
 			const AVRational sar = av_guess_sample_aspect_ratio(_fmt_ctx, stream, NULL);
-			if ((sar.num) && (sar.den))
-				width = (int)av_rescale(codecpar->width, sar.num, sar.den);
-			[str_video appendFormat:@"<li><span class=\"st\">Resolution:</span> <span class=\"sc\">%dx%d", width, height];
+			// show DAR if not equal to FAR
+			if ((sar.num) && (sar.den) && (sar.num != sar.den))
+			{
+				const int height = codecpar->height;
+				const int width = (int)av_rescale(codecpar->width, sar.num, sar.den);
+				[str_video appendFormat:@" => %dx%d (SAR %d:%d)", width, height, sar.num, sar.den];
+			}
 			const AVRational dar = stream->display_aspect_ratio;
 			if ((dar.num) && (dar.den))
 				[str_video appendFormat:@" <em>(%d:%d)</em></span></li>", dar.num, dar.den];
@@ -547,18 +550,15 @@
 
 				[str_video appendString:@"</span></li>"];
 
-				if (profile != NULL)
+				const char* pix_fmt = av_get_pix_fmt_name(codecpar->format);
+				if (pix_fmt != NULL)
 				{
-					const char* pix_fmt = av_get_pix_fmt_name(codecpar->format);
-					if (pix_fmt != NULL)
-					{
-						if (strstr(pix_fmt, "p16"))
-							[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">16 bits</span></li>"];
-						else if (strstr(pix_fmt, "p10"))
-							[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">10 bits</span></li>"];
-						else // Assume 8 bits
-							[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">8 bits</span></li>"];
-					}
+					if (strstr(pix_fmt, "p16"))
+						[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">16 bits</span></li>"];
+					else if (strstr(pix_fmt, "p10"))
+						[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">10 bits</span></li>"];
+					else // Assume 8 bits
+						[str_video appendString:@"<li><span class=\"st\">Bit depth:</span> <span class=\"sc\">8 bits</span></li>"];
 				}
 			}
 
