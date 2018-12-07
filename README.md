@@ -7,18 +7,6 @@ This is a **QuickLook** plugin for Mac OS X *10.11* that allows to have a thumbn
 ![qlMoviePreview QL preview](http://static.whine.fr/images/2014/qlmoviepreview3.jpg)
 
 
-## Installation
-
-You can download the plugin [here](http://repo.whine.fr/qlmoviepreview.qlgenerator.txz "qlmoviepreview.qlgenerator.txz").
-
-Decompress it, and place it in `/Library/QuickLook` or `~/Library/QuickLook`.
-
-You will need to restart the *QuickLook* daemon by running these commands in the terminal :
-
-	qlmanage -r
-	qlmanage -r cache
-
-
 ## License
 
 ***qlMoviePreview*** is released under the *Simplified BSD license*, see **LICENSE**.
